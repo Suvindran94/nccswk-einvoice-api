@@ -1,0 +1,26 @@
+version: "3.8"
+networks:
+  application:
+    driver: bridge
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: ncc-einvoice-api
+    ports:
+      - 8000:8000
+    volumes:
+      - .:/app
+      - /app/vendor
+      - /app/node_modules
+    networks:
+      - application
+    user: dev
+    entrypoint: ['/bin/sh','-c']
+    command:
+      - |
+        sudo chown -R dev:dev /app
+        composer install
+        php artisan optimize:clear
+        php artisan serve --host=0.0.0.0 --port=8000

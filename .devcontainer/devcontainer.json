@@ -1,0 +1,31 @@
+{
+    "name": "NCC E-Invoice API",
+    "dockerComposeFile": "../docker-compose.yaml",
+    "service": "app",
+    "workspaceFolder": "/app",
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "shufo.vscode-blade-formatter",
+                "DEVSENSE.phptools-vscode",
+                "formulahendry.auto-rename-tag",
+                "aaron-bond.better-comments",
+                "usernamehw.errorlens",
+                "xabikos.javascriptsnippets",
+                "codingyu.laravel-goto-view",
+                "esbenp.prettier-vscode",
+                "bradlc.vscode-tailwindcss"
+            ],            
+            "settings": {
+                "php.validate.executablePath": "/usr/local/bin/php",
+                "php.suggest.basic": true,
+                "editor.formatOnSave": true,
+                "files.eol": "\n"
+              
+            }
+        }
+    },
+    "forwardPorts": [8000],
+    "remoteUser": "dev",
+    "postCreateCommand": "sudo chown -R dev:www-data /app && sudo chmod -R ug+rwX /app && git config --global --add safe.directory /app && composer install && php artisan key:generate --ansi"
+}
