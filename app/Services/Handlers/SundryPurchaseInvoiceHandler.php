@@ -157,7 +157,7 @@ class SundryPurchaseInvoiceHandler implements EInvoiceInsertHandlerInterface
                     SPI_DT.SPI_QTY as EINV_QTY, SPI_DT.SPI_UOM as EINV_UOM, 
                     (select  EINV_CODE from {$this->schema_sm}.MTN_MST where CLASS_ID = 'STK_UOM' and MTN_ID = SPI_DT.SPI_UOM) as EINV_UOM_ID, 
                     0 as EINV_DISC_RATE, SPI_DT.SPI_DISC1 as EINV_DISC_AMT, null as EINV_DISC_REASON, 0 as EINV_FEE_RATE, 0 as EINV_FEE_AMT, null as EINV_FEE_REASON, 
-                   (select distinct MTN_P_CAT.P_CAT_TARIFF from {$this->schema_sm}.MTN_P_CAT, {$this->schema_sm}.STK_MST 
+                    (select distinct MTN_P_CAT.P_CAT_TARIFF from {$this->schema_sm}.MTN_P_CAT, {$this->schema_sm}.STK_MST 
                         where MTN_P_CAT.P_STK_CAT1 = STK_MST.STK_CAT1 and MTN_P_CAT.P_CAT_STATUS = 'A' 
                         and MTN_P_CAT.deleted_at is null and STK_MST.STK_CODE = SPI_DT.SPI_STK_CODE )
                         as EINV_PROD_TARIFF_CODE,
