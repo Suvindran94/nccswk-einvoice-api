@@ -170,7 +170,8 @@ class PurchaseInvoiceHandler implements EInvoiceInsertHandlerInterface
                     PI_DT.PI_QTY as EINV_QTY, PI_DT.PI_UOM as EINV_UOM, 
                     (select  EINV_CODE from {$this->schema_sm}.MTN_MST where CLASS_ID = 'STK_UOM' and MTN_ID = PI_DT.PI_UOM) as EINV_UOM_ID, 
                     0 as EINV_DISC_RATE, PI_DT.PI_DISC1 as EINV_DISC_AMT, null as EINV_DISC_REASON, 0 as EINV_FEE_RATE, 0 as EINV_FEE_AMT, null as EINV_FEE_REASON, 
-                    null as EINV_PROD_TARIFF_CODE, null as EINV_COUNTRY_OF_ORI, 
+                    (select distinct {$this->schema_sm}.MTN_P_CAT.P_CAT_TARIFF from {$this->schema_sm}.MTN_P_CAT, {$this->schema_sm}.STK_MST where {$this->schema_sm}.MTN_P_CAT.P_STK_CAT1 = {$this->schema_sm}.STK_MST.STK_CAT1 and {$this->schema_sm}.MTN_P_CAT.P_CAT_STATUS = 'A' and {$this->schema_sm}.MTN_P_CAT.deleted_at is null and {$this->schema_sm}.STK_MST.STK_CODE = {$this->schema_sm}.SI_DT.SI_STK_CODE ) as EINV_PROD_TARIFF_CODE,
+                     null as EINV_COUNTRY_OF_ORI, 
                     PI_DT.PI_CREATE_BY as EINV_CREATE_BY, PI_HDR.PI_CREATE_DATE as EINV_CREATE_DATE, PI_DT.PI_UPD_BY as EINV_UPD_BY, PI_HDR.PI_UPD_DATE as EINV_UPD_DATE
                 from {$this->schema_scm}.PI_DT, {$this->schema_scm}.PI_HDR
                 where PI_HDR.PI_ID = PI_DT.PI_ID
@@ -241,6 +242,7 @@ class PurchaseInvoiceHandler implements EInvoiceInsertHandlerInterface
         $grns = PurchaseInvoiceDetail::where('PI_ID', $this->id)->where('PI_SEQ_STATUS', '<>', 'D')->select('PI_SOU_NO')->groupBy('PI_SOU_NO')->pluck('PI_SOU_NO');
         $data = [
             'PI_STATUS' => 'D',
+            'PI_DEL_REMARK' => $remark,
             'deleted_at' => Carbon::now(),
             'PI_UPD_BY' => $delete_user_id,
         ];

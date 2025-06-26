@@ -56,7 +56,7 @@ class SalesInvoiceHandler implements EInvoiceInsertHandlerInterface
                     EINV_TOTAL_AMT, EINV_CREATE_BY_NAME, EINV_CREATE_BY, EINV_CREATE_DATE, EINV_UPD_BY, EINV_UPD_DATE, EINV_STATUS )
                 select  SI_HDR.SI_ID, CO_NAME1, AR_NAME1, CO_TIN, CO_REG_TYPE, CO_ROG, CO_ROG_NEW, 
                     ifnull(CO_SST,'NA') as CO_SST, ifnull(CO_TT,'NA') as CO_TTX,  CO_EMAIL as EINV_SUP_EMAIL, CO_MSIC, CO_BUSINESS_DESC, CO_WEBSITE,
-                    AR_ID, AR_NAMES, EINV_TIN, trim((select REG_TYPE from {$this->schema_sm}.MTN_REG_TYPE where ID = AR_MST_CUSTOMER.EINV_REG_TYPE)), AR_ROC_NEW, ifnull(AR_SST_REG_NO,'NA') as AR_SST_REG_NO, 
+                    AR_ID, AR_NAMES, EINV_TIN, trim((select REG_TYPE from {$this->schema_sm}.MTN_REG_TYPE where ID = {$this->schema_sm}.AR_MST_CUSTOMER.EINV_REG_TYPE)), AR_ROC_NEW, ifnull(AR_SST_REG_NO,'NA') as AR_SST_REG_NO, 
                     ifnull(AR_TTX_REG_NO,'NA') as AR_TTX_REG_NO, EINV_AR_EMAIL,
                     concat(trim(ifnull(CO_ADDR1,'')), ' ', trim(ifnull(CO_ADDR2, '')),  trim(concat(' ', trim(ifnull(CO_ADDR3, '')), ' ' , trim(ifnull(CO_ADDR4, '')), ' ')), 
                         ' ', trim(ifnull(MTN_CO.POSTCODE,'')), ' ', trim((select CITY_NAME from {$this->schema_sm}.MTN_CITY where ID = MTN_CO.CITY_ID) ),
@@ -168,7 +168,8 @@ class SalesInvoiceHandler implements EInvoiceInsertHandlerInterface
                     sum(SI_DT.SI_QTY) as EINV_QTY, SI_DT.SI_UOM as EINV_UOM, 
                     (select  EINV_CODE from {$this->schema_sm}.MTN_MST where CLASS_ID = 'STK_UOM' and MTN_ID = SI_DT.SI_UOM) as EINV_UOM_ID, 
                     0 as EINV_DISC_RATE, 0 as EINV_DISC_AMT, null as EINV_DISC_REASON, 0 as EINV_FEE_RATE, 0 as EINV_FEE_AMT, null as EINV_FEE_REASON, 
-                    null as EINV_PROD_TARIFF_CODE, null as EINV_COUNTRY_OF_ORI, 
+                    (select distinct {$this->schema_sm}.MTN_P_CAT.P_CAT_TARIFF from {$this->schema_sm}.MTN_P_CAT, {$this->schema_sm}.STK_MST where {$this->schema_sm}.MTN_P_CAT.P_STK_CAT1 = {$this->schema_sm}.STK_MST.STK_CAT1 and {$this->schema_sm}.MTN_P_CAT.P_CAT_STATUS = 'A' and {$this->schema_sm}.MTN_P_CAT.deleted_at is null and {$this->schema_sm}.STK_MST.STK_CODE = {$this->schema_sm}.SI_DT.SI_STK_CODE ) as EINV_PROD_TARIFF_CODE,
+                     null as EINV_COUNTRY_OF_ORI, 
                     SI_DT.SI_CREATE_BY as EINV_CREATE_BY, SI_HDR.SI_CREATE_DATE as EINV_CREATE_DATE, SI_DT.SI_UPD_BY as EINV_UPD_BY, SI_HDR.SI_UPD_DATE as EINV_UPD_DATE
                 from {$this->schema_sm}.SI_DT, {$this->schema_sm}.SI_HDR
                 where SI_HDR.SI_ID = SI_DT.SI_ID
@@ -210,7 +211,7 @@ class SalesInvoiceHandler implements EInvoiceInsertHandlerInterface
         }
         $salesInvoiceHeader->update($data);
         $salesInvoiceHeader->refresh();
-
+        \Log::info($salesInvoiceHeader);
         if ($this->approve_status == 'A') {
             DB::connection('mysql_admin')->select('CALL SP_INSERT_GL_SI(?)', [$salesInvoiceHeader->SI_ID]);
         }

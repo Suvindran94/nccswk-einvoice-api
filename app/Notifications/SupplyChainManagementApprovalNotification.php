@@ -2,7 +2,7 @@
 
 namespace App\Notifications;
 
-use App\Channels\SupplyChainManagementDatabaseChannel;
+use App\Channels\SupplyChainManagementChannel;
 use App\Models\PurchaseInvoiceHeader;
 use App\Models\SundryPurchaseInvoiceHeader;
 use Illuminate\Bus\Queueable;
@@ -32,7 +32,7 @@ class SupplyChainManagementApprovalNotification extends Notification
      */
     public function via(object $notifiable): array
     {
-        return [SupplyChainManagementDatabaseChannel::class];
+        return [SupplyChainManagementChannel::class];
     }
 
     /**

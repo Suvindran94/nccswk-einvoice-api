@@ -26,6 +26,7 @@ class DocumentController extends Controller
     {
 
         $id = $request->input('id');
+
         $eInvoiceTableService = new EInvoiceTableService($id);
 
         try {

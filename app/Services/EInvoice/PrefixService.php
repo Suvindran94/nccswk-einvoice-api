@@ -16,8 +16,8 @@ class PrefixService
     private function extractPrefix()
     {
         $prefix = strtok($this->id, '/');
-        $extractedPrefix = preg_replace('/[^A-Z]/', '', $prefix);
 
+        $extractedPrefix = preg_replace('/[^A-Z-]/', '', $prefix);
         return strtoupper($extractedPrefix);
     }
 

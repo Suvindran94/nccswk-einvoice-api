@@ -2,7 +2,7 @@
 
 namespace App\Notifications;
 
-use App\Channels\FinanceManagementDatabaseChannel;
+use App\Channels\FinanceManagementChannel;
 use Illuminate\Notifications\Notification;
 
 class FinanceManagementApprovalNotification extends Notification
@@ -34,7 +34,7 @@ class FinanceManagementApprovalNotification extends Notification
      */
     public function via(object $notifiable): array
     {
-        return [FinanceManagementDatabaseChannel::class];
+        return [FinanceManagementChannel::class];
     }
 
 

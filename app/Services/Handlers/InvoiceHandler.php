@@ -147,7 +147,8 @@ class InvoiceHandler implements EInvoiceInsertHandlerInterface
                     INV_DT.INV_QTY as EINV_QTY, INV_DT.INV_UOM as EINV_UOM, 
                     (select  EINV_CODE from {$this->schema_sm}.MTN_MST where CLASS_ID = 'STK_UOM' and MTN_ID = INV_DT.INV_UOM) as EINV_UOM_ID, 
                     0 as EINV_DISC_RATE, 0 as EINV_DISC_AMT, null as EINV_DISC_REASON, 0 as EINV_FEE_RATE, 0 as EINV_FEE_AMT, null as EINV_FEE_REASON, 
-                    null as EINV_PROD_TARIFF_CODE, null as EINV_COUNTRY_OF_ORI, 
+                    (select distinct {$this->schema_sm}.MTN_P_CAT.P_CAT_TARIFF from {$this->schema_sm}.MTN_P_CAT, {$this->schema_sm}.STK_MST where {$this->schema_sm}.MTN_P_CAT.P_STK_CAT1 = {$this->schema_sm}.STK_MST.STK_CAT1 and {$this->schema_sm}.MTN_P_CAT.P_CAT_STATUS = 'A' and {$this->schema_sm}.MTN_P_CAT.deleted_at is null and {$this->schema_sm}.STK_MST.STK_CODE = {$this->schema_sm}.SI_DT.SI_STK_CODE ) as EINV_PROD_TARIFF_CODE,
+                    null as EINV_COUNTRY_OF_ORI, 
                     INV_DT.INV_CREATE_BY as EINV_CREATE_BY, INV_HDR.INV_CREATE_DATE as EINV_CREATE_DATE, INV_DT.INV_UPD_BY as EINV_UPD_BY, INV_HDR.INV_UPD_DATE as EINV_UPD_DATE
                 from {$this->schema_fm}.INV_DT, {$this->schema_fm}.INV_HDR
                     where INV_HDR.INV_ID = INV_DT.INV_ID

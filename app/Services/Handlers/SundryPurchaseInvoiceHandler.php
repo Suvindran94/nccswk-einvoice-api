@@ -157,7 +157,8 @@ class SundryPurchaseInvoiceHandler implements EInvoiceInsertHandlerInterface
                     SPI_DT.SPI_QTY as EINV_QTY, SPI_DT.SPI_UOM as EINV_UOM, 
                     (select  EINV_CODE from {$this->schema_sm}.MTN_MST where CLASS_ID = 'STK_UOM' and MTN_ID = SPI_DT.SPI_UOM) as EINV_UOM_ID, 
                     0 as EINV_DISC_RATE, SPI_DT.SPI_DISC1 as EINV_DISC_AMT, null as EINV_DISC_REASON, 0 as EINV_FEE_RATE, 0 as EINV_FEE_AMT, null as EINV_FEE_REASON, 
-                    null as EINV_PROD_TARIFF_CODE, null as EINV_COUNTRY_OF_ORI, 
+                   (select distinct {$this->schema_sm}.MTN_P_CAT.P_CAT_TARIFF from {$this->schema_sm}.MTN_P_CAT, {$this->schema_sm}.STK_MST where {$this->schema_sm}.MTN_P_CAT.P_STK_CAT1 = {$this->schema_sm}.STK_MST.STK_CAT1 and {$this->schema_sm}.MTN_P_CAT.P_CAT_STATUS = 'A' and {$this->schema_sm}.MTN_P_CAT.deleted_at is null and {$this->schema_sm}.STK_MST.STK_CODE = {$this->schema_sm}.SI_DT.SI_STK_CODE ) as EINV_PROD_TARIFF_CODE,
+                    null as EINV_COUNTRY_OF_ORI, 
                     SPI_DT.SPI_CREATE_BY as EINV_CREATE_BY, SPI_HDR.SPI_CREATE_DATE as EINV_CREATE_DATE, SPI_DT.SPI_UPD_BY as EINV_UPD_BY, SPI_HDR.SPI_UPD_DATE as EINV_UPD_DATE
                 from {$this->schema_scm}.SPI_DT, {$this->schema_scm}.SPI_HDR
                     where SPI_HDR.SPI_ID = SPI_DT.SPI_ID
@@ -226,6 +227,7 @@ class SundryPurchaseInvoiceHandler implements EInvoiceInsertHandlerInterface
         $grns = SundryPurchaseInvoiceDetail::where('SPI_ID', $this->id)->where('SPI_SEQ_STATUS', '<>', 'D')->select('SPI_SOU_NO')->groupBy('SPI_SOU_NO')->pluck('SPI_SOU_NO');
         $data = [
             'SPI_STATUS' => 'D',
+            'SPI_DEL_REMARK' => $remark,
             'deleted_at' => Carbon::now(),
             'SPI_UPD_BY' => $delete_user_id,
         ];

@@ -6,7 +6,7 @@ use Illuminate\Notifications\Channels\DatabaseChannel as IlluminateDatabaseChann
 use Illuminate\Notifications\Notification;
 use Illuminate\Support\Str;
 use DB;
-class SalesManagementDatabaseChannel extends IlluminateDatabaseChannel
+class SalesManagementChannel extends IlluminateDatabaseChannel
 {
     protected $connection = 'mysql_sm';
     public function buildPayload($notifiable, Notification $notification)

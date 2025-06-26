@@ -140,7 +140,6 @@ class EInvoiceTableService
             'EINV_HDR.EINV_DOC_STATUS_REASON',
             'EINV_MTN_TYPE.EINV_TYPE_NAME'
         )
-            ->whereNull('EINV_SUBMISSION_UID')
             ->leftJoin('EINV_MTN_TYPE', 'EINV_MTN_TYPE.EINV_TYPE_CODE', 'EINV_HDR.EINV_TYPE')
             ->where('EINV_ID', $this->id)
             ->first();

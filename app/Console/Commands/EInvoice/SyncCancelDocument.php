@@ -1,11 +1,16 @@
 <?php
 
+
 namespace App\Console\Commands\EInvoice;
 
 use App\Models\EinvoiceHeader;
 use App\Services\EInvoice\DocumentService;
+use App\Models\User;
+use App\Services\HandlerService;
+use App\Services\EInvoice\PrefixService;
 use Illuminate\Console\Command;
 use App\Services\GeneralService;
+use DB;
 use Carbon\Carbon;
 class SyncCancelDocument extends Command
 {
@@ -28,6 +33,7 @@ class SyncCancelDocument extends Command
      */
     public function handle()
     {
+        $this->info('start');
         $cancelHoursDuration = 96;
         $params = [
             'InvoiceDirection' => 'Sent',
@@ -61,7 +67,15 @@ class SyncCancelDocument extends Command
                 'EINV_UPD_BY' => 1,
                 'EINV_STATUS' => 'C'
             ]);
-
+            if ($updated) {
+                $remark = 'Cancel Via E-Invoice';
+                $prefixService = new PrefixService($einvoiceId);
+                $default_user = User::find(config('constants.SYSTEM_USER_ID'));
+                $handlerService = new HandlerService($prefixService->getDocumentType(), $einvoiceId, $default_user->id, null, null, null);
+                $handlerService->getHandle()->delete($remark, $default_user->StaffID, $default_user->id, false);
+                $prefix = strtolower($prefixService->getDocumentType()->value);
+                DB::connection('mysql')->statement('CALL SP_INSERT_EINV_CANCEL(?, ?, ?, ?, ?)', [strtoupper($prefix), $einvoiceId, $default_user->id, Carbon::now(), $remark]);
+            }
         }
     }
 }

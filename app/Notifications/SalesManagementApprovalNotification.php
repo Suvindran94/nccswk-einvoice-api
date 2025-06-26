@@ -2,7 +2,7 @@
 
 namespace App\Notifications;
 
-use App\Channels\SalesManagementDatabaseChannel;
+use App\Channels\SalesManagementChannel;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
@@ -32,7 +32,7 @@ class SalesManagementApprovalNotification extends Notification
      */
     public function via(object $notifiable): array
     {
-        return [SalesManagementDatabaseChannel::class];
+        return [SalesManagementChannel::class];
     }
 
     /**

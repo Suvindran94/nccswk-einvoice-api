@@ -18,21 +18,21 @@ class EInvoiceJsonDocumentFormatter
     /**
      * Example method for the service.
      */
-    protected int $totalExcTaxAmt;
+    protected float $totalExcTaxAmt;
 
-    protected int $totalIncTaxAmt;
+    protected float $totalIncTaxAmt;
 
-    protected int $totalPayableAmt;
+    protected float $totalPayableAmt;
 
-    protected int $totalNetAmt;
+    protected float $totalNetAmt;
 
-    protected int $totalDiscAmt;
+    protected float $totalDiscAmt;
 
-    protected int $totalChargeAmt;
+    protected float $totalChargeAmt;
 
-    protected int $totalTaxableAmtPerTaxType;
+    protected float $totalTaxableAmtPerTaxType;
 
-    protected int $totalTaxAmtPerTaxType;
+    protected float $totalTaxAmtPerTaxType;
 
     public function __construct()
     {
@@ -954,7 +954,7 @@ class EInvoiceJsonDocumentFormatter
                 'InvoicedQuantity' => [
                     [
                         '_' => intval($dt->EINV_QTY),
-                        'unitCode' => $dt->EINV_UOM_CODE ?? '',
+                        'unitCode' => $dt->EINV_UOM_ID ?? '',
                     ],
                 ],
                 'LineExtensionAmount' => [
@@ -1125,7 +1125,6 @@ class EInvoiceJsonDocumentFormatter
                 ],
             ];
         }
-
         return $invoiceLines;
     }
 

@@ -1,4 +1,4 @@
-FROM php:8.4.5
+FROM php:8.2.8
 
 # Install system dependencies
 RUN apt-get update -y && apt-get install -y --no-install-recommends \

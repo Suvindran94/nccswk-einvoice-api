@@ -7,7 +7,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: ncc-einvoice-api
+    container_name: ncc-einvoice-swk-api
     ports:
       - 8000:8000
     volumes:

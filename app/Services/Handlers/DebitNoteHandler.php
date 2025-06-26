@@ -5,7 +5,7 @@ namespace App\Services\Handlers;
 use DB;
 use Carbon\Carbon;
 use App\Contracts\EInvoiceInsertHandlerInterface;
-use App\Models\Dcnheader;
+use App\Models\DcnHeader;
 use App\Models\DcnDetail;
 use App\Models\DcnHistory;
 use App\Models\DcnDocument;
@@ -147,7 +147,8 @@ class DebitNoteHandler implements EInvoiceInsertHandlerInterface
                     DCN_DT.DCN_QTY as EINV_QTY, DCN_DT.DCN_UOM as EINV_UOM, 
                     (select  EINV_CODE from {$this->schema_sm}.MTN_MST where CLASS_ID = 'STK_UOM' and MTN_ID = DCN_DT.DCN_UOM) as EINV_UOM_ID, 
                     0 as EINV_DISC_RATE, 0 as EINV_DISC_AMT, null as EINV_DISC_REASON, 0 as EINV_FEE_RATE, 0 as EINV_FEE_AMT, null as EINV_FEE_REASON, 
-                    null as EINV_PROD_TARIFF_CODE, null as EINV_COUNTRY_OF_ORI, 
+                    (select distinct {$this->schema_sm}.MTN_P_CAT.P_CAT_TARIFF from {$this->schema_sm}.MTN_P_CAT, {$this->schema_sm}.STK_MST where {$this->schema_sm}.MTN_P_CAT.P_STK_CAT1 = {$this->schema_sm}.STK_MST.STK_CAT1 and {$this->schema_sm}.MTN_P_CAT.P_CAT_STATUS = 'A' and {$this->schema_sm}.MTN_P_CAT.deleted_at is null and {$this->schema_sm}.STK_MST.STK_CODE = {$this->schema_sm}.SI_DT.SI_STK_CODE ) as EINV_PROD_TARIFF_CODE,
+                    null as EINV_COUNTRY_OF_ORI, 
                     DCN_DT.DCN_CREATE_BY as EINV_CREATE_BY, DCN_HDR.DCN_CREATE_DATE as EINV_CREATE_DATE, DCN_DT.DCN_UPD_BY as EINV_UPD_BY, DCN_HDR.DCN_UPD_DATE as EINV_UPD_DATE
                 from {$this->schema_fm}.DCN_DT, {$this->schema_fm}.DCN_HDR
                     where DCN_HDR.DCN_ID = DCN_DT.DCN_ID
@@ -220,10 +221,7 @@ class DebitNoteHandler implements EInvoiceInsertHandlerInterface
 
     public function delete(?string $remark, ?int $staff_id, int $delete_user_id, bool $update_approve_information): void
     {
-        \Log::info('id is ' . $this->id);
         $dcnHeader = DcnHeader::where('DCN_ID', $this->id)->first();
-        \Log::info($dcnHeader);
-        return;
         if ($dcnHeader->DCN_APV_STATUS == 'A') {
             DB::select('CALL SP_INSERT_GL_DCN_DEL(?)', array($dcnHeader->DCN_ID));
         }

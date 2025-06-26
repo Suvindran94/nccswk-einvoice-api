@@ -10,6 +10,6 @@ class GeneralService
 
     public static function isValidEInvoiceId($id)
     {
-        return substr($id, 0, 2) !== 'S-';
+        return substr($id, 0, 2) == 'S-';
     }
 }
