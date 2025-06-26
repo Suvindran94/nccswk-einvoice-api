@@ -168,7 +168,9 @@ class SalesInvoiceHandler implements EInvoiceInsertHandlerInterface
                     sum(SI_DT.SI_QTY) as EINV_QTY, SI_DT.SI_UOM as EINV_UOM, 
                     (select  EINV_CODE from {$this->schema_sm}.MTN_MST where CLASS_ID = 'STK_UOM' and MTN_ID = SI_DT.SI_UOM) as EINV_UOM_ID, 
                     0 as EINV_DISC_RATE, 0 as EINV_DISC_AMT, null as EINV_DISC_REASON, 0 as EINV_FEE_RATE, 0 as EINV_FEE_AMT, null as EINV_FEE_REASON, 
-                    (select distinct {$this->schema_sm}.MTN_P_CAT.P_CAT_TARIFF from {$this->schema_sm}.MTN_P_CAT, {$this->schema_sm}.STK_MST where {$this->schema_sm}.MTN_P_CAT.P_STK_CAT1 = {$this->schema_sm}.STK_MST.STK_CAT1 and {$this->schema_sm}.MTN_P_CAT.P_CAT_STATUS = 'A' and {$this->schema_sm}.MTN_P_CAT.deleted_at is null and {$this->schema_sm}.STK_MST.STK_CODE = {$this->schema_sm}.SI_DT.SI_STK_CODE ) as EINV_PROD_TARIFF_CODE,
+                    (select distinct MTN_P_CAT.P_CAT_TARIFF from {$this->schema_sm}.MTN_P_CAT, {$this->schema_sm}.STK_MST 
+                    where MTN_P_CAT.P_STK_CAT1 = STK_MST.STK_CAT1 and MTN_P_CAT.P_CAT_STATUS = 'A' 
+                    and MTN_P_CAT.deleted_at is null and STK_MST.STK_CODE = SI_DT.SI_STK_CODE ) as EINV_PROD_TARIFF_CODE,
                      null as EINV_COUNTRY_OF_ORI, 
                     SI_DT.SI_CREATE_BY as EINV_CREATE_BY, SI_HDR.SI_CREATE_DATE as EINV_CREATE_DATE, SI_DT.SI_UPD_BY as EINV_UPD_BY, SI_HDR.SI_UPD_DATE as EINV_UPD_DATE
                 from {$this->schema_sm}.SI_DT, {$this->schema_sm}.SI_HDR

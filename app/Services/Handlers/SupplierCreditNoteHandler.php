@@ -158,7 +158,9 @@ class SupplierCreditNoteHandler implements EInvoiceInsertHandlerInterface
                     SDCN_DT.DCN_QTY as EINV_QTY, SDCN_DT.DCN_UOM as EINV_UOM, 
                     (select  EINV_CODE from {$this->schema_sm}.MTN_MST where CLASS_ID = 'STK_UOM' and MTN_ID = SDCN_DT.DCN_UOM) as EINV_UOM_ID, 
                     0 as EINV_DISC_RATE, 0 as EINV_DISC_AMT, null as EINV_DISC_REASON, 0 as EINV_FEE_RATE, 0 as EINV_FEE_AMT, null as EINV_FEE_REASON, 
-                    (select distinct {$this->schema_sm}.MTN_P_CAT.P_CAT_TARIFF from {$this->schema_sm}.MTN_P_CAT, {$this->schema_sm}.STK_MST where {$this->schema_sm}.MTN_P_CAT.P_STK_CAT1 = {$this->schema_sm}.STK_MST.STK_CAT1 and {$this->schema_sm}.MTN_P_CAT.P_CAT_STATUS = 'A' and {$this->schema_sm}.MTN_P_CAT.deleted_at is null and {$this->schema_sm}.STK_MST.STK_CODE = {$this->schema_sm}.SI_DT.SI_STK_CODE ) as EINV_PROD_TARIFF_CODE,
+                    (select distinct MTN_P_CAT.P_CAT_TARIFF from {$this->schema_sm}.MTN_P_CAT, {$this->schema_sm}.STK_MST 
+                    where MTN_P_CAT.P_STK_CAT1 = STK_MST.STK_CAT1 and MTN_P_CAT.P_CAT_STATUS = 'A' 
+                    and MTN_P_CAT.deleted_at is null and STK_MST.STK_CODE = SDCN_DT.DCN_STK_CODE ) as EINV_PROD_TARIFF_CODE,
                      null as EINV_COUNTRY_OF_ORI, 
                     SDCN_DT.DCN_CREATE_BY as EINV_CREATE_BY, SDCN_HDR.DCN_CREATE_DATE as EINV_CREATE_DATE, SDCN_DT.DCN_UPD_BY as EINV_UPD_BY, SDCN_HDR.DCN_UPD_DATE as EINV_UPD_DATE
                 from {$this->schema_fm}.SDCN_DT, {$this->schema_fm}.SDCN_HDR

@@ -154,8 +154,7 @@ class BillHandler implements EInvoiceInsertHandlerInterface
                     BILL_DT.BILL_QTY as EINV_QTY, BILL_DT.BILL_UOM as EINV_UOM, 
                     (select  EINV_CODE from {$this->schema_sm}.MTN_MST where CLASS_ID = 'STK_UOM' and MTN_ID = BILL_DT.BILL_UOM) as EINV_UOM_ID, 
                     0 as EINV_DISC_RATE, BILL_DT.BILL_DISC1 as EINV_DISC_AMT, null as EINV_DISC_REASON, 0 as EINV_FEE_RATE, 0 as EINV_FEE_AMT, null as EINV_FEE_REASON, 
-                    (select distinct {$this->schema_sm}.MTN_P_CAT.P_CAT_TARIFF from {$this->schema_sm}.MTN_P_CAT, {$this->schema_sm}.STK_MST where {$this->schema_sm}.MTN_P_CAT.P_STK_CAT1 = {$this->schema_sm}.STK_MST.STK_CAT1 and {$this->schema_sm}.MTN_P_CAT.P_CAT_STATUS = 'A' and {$this->schema_sm}.MTN_P_CAT.deleted_at is null and {$this->schema_sm}.STK_MST.STK_CODE = {$this->schema_sm}.SI_DT.SI_STK_CODE ) as EINV_PROD_TARIFF_CODE,
-                     null as EINV_COUNTRY_OF_ORI, 
+                    null as EINV_PROD_TARIFF_CODE, null as EINV_COUNTRY_OF_ORI, 
                     BILL_DT.BILL_CREATE_BY as EINV_CREATE_BY, BILL_HDR.BILL_CREATE_DATE as EINV_CREATE_DATE, BILL_DT.BILL_UPD_BY as EINV_UPD_BY, BILL_HDR.BILL_UPD_DATE as EINV_UPD_DATE
                 from {$this->schema_fm}.BILL_DT, {$this->schema_fm}.BILL_HDR
                 where BILL_HDR.BILL_ID = BILL_DT.BILL_ID
