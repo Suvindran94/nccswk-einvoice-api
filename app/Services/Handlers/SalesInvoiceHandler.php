@@ -96,7 +96,8 @@ class SalesInvoiceHandler implements EInvoiceInsertHandlerInterface
                     null as EINV_PAYMENT_MODE,	
                     null as EINV_SUP_BANK_ACCT, 
                     (select TERM_DESC from {$this->schema_sm}.MTN_TERM where MTN_TERM.TERM_ID = SI_HDR.SI_TERM) as EINV_TERM,
-                    ifnull(tblDeposit.depositAmt,0) as EINV_PREPAYMENT_AMT, tblDeposit.DepositDate as EINV_PREPAYMENT_DATE, ifnull(tblDeposit.DepositRef,'-') as EINV_PREPAYMENT_REF, 
+                    ifnull(tblDeposit.depositAmt,0) as EINV_PREPAYMENT_AMT,if(ifnull(tblDeposit.depositAmt,0) = 0, null,  tblDeposit.DepositDate) as EINV_PREPAYMENT_DATE, 
+                    IF(ifnull(tblDeposit.depositAmt,0) = 0, '-', ifnull(tblDeposit.DepositRef,'-')) as EINV_PREPAYMENT_REF,
                     null as EINV_BILL_REF, null as EINV_REF_CUSTOM, 
                     SI_D_NAME as EINV_SHIP_RCPT_NAME, 
                     concat(trim(ifnull(SI_D_LINE_1,'')), ' ', trim(ifnull(SI_D_LINE_2, '')),  trim(concat(' ', trim(ifnull(SI_D_LINE_3, '')), ' ' , trim(ifnull(SI_D_LINE_4, '')), ' ')), 
@@ -131,7 +132,7 @@ class SalesInvoiceHandler implements EInvoiceInsertHandlerInterface
                 left join ( select SI_DEPOSIT.SI_ID, group_concat(SI_DEPOSIT.QUO_ID) as DepositRef, max(RECEIPT_HDR.RCPT_COLLECTION_DATE) as DepositDate , sum(SI_DEPOSIT.DEP_AMT_OFFSET) as depositAmt 
                             from {$this->schema_sm}.SI_DEPOSIT, {$this->schema_fm}.RECEIPT_HDR
                             where SI_DEPOSIT.RCPT_ID = RECEIPT_HDR.RCPT_ID 
-                            and SI_DEPOSIT.STATUS = 'Y' and SI_DEPOSIT.deleted_at is null 
+                            and SI_DEPOSIT.deleted_at is null 
                             group by SI_DEPOSIT.SI_ID
                         ) tblDeposit on tblDeposit.SI_ID = SI_HDR.SI_ID
                 where SI_HDR.SI_AR = AR_MST_CUSTOMER.AR_ID
