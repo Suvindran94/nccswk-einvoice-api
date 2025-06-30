@@ -225,7 +225,7 @@ class CreditNoteHandler implements EInvoiceInsertHandlerInterface
     public function delete(?string $remark, ?int $staff_id, int $delete_user_id, bool $update_approve_information, bool $from_einvoice = false): void
     {
         $dcnHeader = DcnHeader::where('DCN_ID', $this->id)->first();
-        if ($dcnHeader->DCN_APV_STATUS == 'A') {
+        if (!$from_einvoice && $dcnHeader->DCN_APV_STATUS == 'A') {
             DB::select('CALL SP_INSERT_GL_DCN_DEL(?)', array($dcnHeader->DCN_ID));
         }
         $data = [

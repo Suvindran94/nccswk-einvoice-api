@@ -62,7 +62,7 @@ class CheckDocumentStatusCommand extends Command
                     ))->getHandle();
                     if (!$documentStatus['success']) {
                         $default_user = User::find(config('constants.SYSTEM_USER_ID'));
-                        $handler->delete("E-Invoice status is " . $documentStatus['message'], $default_user->StaffID, $default_user->id, false);
+                        $handler->delete("E-Invoice status is " . $documentStatus['message'], $default_user->StaffID, $default_user->id, false, false);
                         return;
                     }
                     \Log::info('Approve');
