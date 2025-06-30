@@ -391,7 +391,7 @@ class EInvoiceJsonDocumentFormatter
                                         [
                                             'ID' => [
                                                 [
-                                                    '_' => $eInvoiceHeader->EINV_SUP_TIN,
+                                                    '_' => preg_replace('/\s+/', '', $eInvoiceHeader->EINV_SUP_TIN),
                                                     'schemeID' => 'TIN',
                                                 ],
                                             ],
@@ -573,7 +573,7 @@ class EInvoiceJsonDocumentFormatter
                                         [
                                             'ID' => [
                                                 [
-                                                    '_' => $eInvoiceHeader->EINV_BUY_TIN,
+                                                    '_' => preg_replace('/\s+/', '', $eInvoiceHeader->EINV_BUY_TIN),
                                                     'schemeID' => 'TIN',
                                                 ],
                                             ],
@@ -692,7 +692,7 @@ class EInvoiceJsonDocumentFormatter
                                         [
                                             'ID' => [
                                                 [
-                                                    '_' => $eInvoiceHeader->EINV_SHIP_RCPT_TIN,
+                                                    '_' => preg_replace('/\s+/', '', $eInvoiceHeader->EINV_SHIP_RCPT_TIN),
                                                     'schemeID' => 'TIN',
                                                 ],
                                             ],
