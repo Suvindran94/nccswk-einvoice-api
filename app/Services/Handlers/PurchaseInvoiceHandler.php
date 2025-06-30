@@ -221,8 +221,8 @@ class PurchaseInvoiceHandler implements EInvoiceInsertHandlerInterface
             DB::connection('mysql')->select('CALL SP_INSERT_GL_PI(?,?)', [$purchaseInvoiceHeader->PI_ID, $purchaseInvoiceHeader->PI_CURR]);
         }
         Notification::send($purchaseInvoiceHeader->approver, new SupplyChainManagementApprovalNotification('App\Notifications\PIApprovalNoty', $purchaseInvoiceHeader));
-        // Mail::to($purchaseInvoiceHeader->creator->email)->send(new PurhcaseInvoiceApprovalMail($PurchaseInvoiceHeader));
-        Mail::to(env('TEST_MAIL_RECIPIENT'))->send(new PurhcaseInvoiceApprovalMail($purchaseInvoiceHeader));
+        Mail::to($purchaseInvoiceHeader->creator->email)->send(new PurhcaseInvoiceApprovalMail($purchaseInvoiceHeader));
+
     }
 
     public function updateToInProgress(): void

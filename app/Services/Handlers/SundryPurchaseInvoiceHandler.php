@@ -205,8 +205,8 @@ class SundryPurchaseInvoiceHandler implements EInvoiceInsertHandlerInterface
         }
         \Log::info(json_encode($sundryPurchaseInvoiceHeader->creator));
         Notification::send($sundryPurchaseInvoiceHeader->creator, new SupplyChainManagementApprovalNotification('App\Notifications\SPIApprovalNoty', $sundryPurchaseInvoiceHeader));
-        // Mail::to($sundryPurchaseInvoiceHeader->creator->email)->send(new SundryPurchaseInvoiceApprovalMail($sundryPurchaseInvoiceHeader));
-        Mail::to(env('TEST_MAIL_RECIPIENT'))->send(new SundryPurchaseInvoiceApprovalMail($sundryPurchaseInvoiceHeader));
+        Mail::to($sundryPurchaseInvoiceHeader->creator->email)->send(new SundryPurchaseInvoiceApprovalMail($sundryPurchaseInvoiceHeader));
+
     }
 
     public function updateToInProgress(): void
