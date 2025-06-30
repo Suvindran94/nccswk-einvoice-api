@@ -178,7 +178,6 @@ class CreditNoteHandler implements EInvoiceInsertHandlerInterface
     public function update(bool $is_cron_job): void
     {
         $dcnHeader = DcnHeader::where('DCN_ID', $this->id)->first();
-        \Log::info($dcnHeader);
         $data = [
             'DCN_STATUS' => $this->approve_status,
         ];
@@ -223,7 +222,7 @@ class CreditNoteHandler implements EInvoiceInsertHandlerInterface
         ]);
     }
 
-    public function delete(?string $remark, ?int $staff_id, int $delete_user_id, bool $update_approve_information): void
+    public function delete(?string $remark, ?int $staff_id, int $delete_user_id, bool $update_approve_information, bool $from_einvoice = false): void
     {
         $dcnHeader = DcnHeader::where('DCN_ID', $this->id)->first();
         if ($dcnHeader->DCN_APV_STATUS == 'A') {

@@ -225,7 +225,7 @@ class GeneralLedgerHandler implements EInvoiceInsertHandlerInterface
         ]);
     }
 
-    public function delete(?string $remark, ?int $staff_id, int $delete_user_id, bool $update_approve_information): void
+    public function delete(?string $remark, ?int $staff_id, int $delete_user_id, bool $update_approve_information, bool $from_einvoice = false): void
     {
         $generalLedgerHeader = GeneralLedgerHeader::where('GL_TRXNOID', $this->id)->first();
         $data = [

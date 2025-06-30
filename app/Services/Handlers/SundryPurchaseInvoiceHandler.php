@@ -221,7 +221,7 @@ class SundryPurchaseInvoiceHandler implements EInvoiceInsertHandlerInterface
             "SPI_UPD_BY" => $this->user_id,
         ]);
     }
-    public function delete(?string $remark, ?int $staff_id, int $delete_user_id, bool $update_approve_information): void
+    public function delete(?string $remark, ?int $staff_id, int $delete_user_id, bool $update_approve_information, bool $from_einvoice = false): void
     {
         $iddt = SundryPurchaseInvoiceDetail::where('SPI_ID', $this->id)->where('SPI_SEQ_STATUS', '<>', 'D')->get();
         $grns = SundryPurchaseInvoiceDetail::where('SPI_ID', $this->id)->where('SPI_SEQ_STATUS', '<>', 'D')->select('SPI_SOU_NO')->groupBy('SPI_SOU_NO')->pluck('SPI_SOU_NO');
