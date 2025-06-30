@@ -72,7 +72,7 @@ class SyncCancelDocument extends Command
                 $prefixService = new PrefixService($einvoiceId);
                 $default_user = User::find(config('constants.SYSTEM_USER_ID'));
                 $handlerService = new HandlerService($prefixService->getDocumentType(), $einvoiceId, $default_user->id, null, null, null);
-                $handlerService->getHandle()->delete($remark, $default_user->StaffID, $default_user->id, false, false);
+                $handlerService->getHandle()->delete($remark, $default_user->StaffID, $default_user->id, false, true);
                 $prefix = strtolower($prefixService->getDocumentType()->value);
                 DB::connection('mysql')->statement('CALL SP_INSERT_EINV_CANCEL(?, ?, ?, ?, ?)', [strtoupper($prefix), $einvoiceId, $default_user->id, Carbon::now(), $remark]);
             }

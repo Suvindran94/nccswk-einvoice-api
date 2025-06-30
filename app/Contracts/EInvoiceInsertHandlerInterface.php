@@ -10,7 +10,7 @@ interface EInvoiceInsertHandlerInterface
 
     public function updateToInProgress(): void;
 
-    public function delete(?string $remark, ?int $staff_id, int $delete_user_id, bool $update_approve_information, bool $from_einvoice = false): void;
+    public function delete(?string $remark, ?int $staff_id, int $delete_user_id, bool $update_approve_information, bool $from_einvoice): void;
 
 }
 
