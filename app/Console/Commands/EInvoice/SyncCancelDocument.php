@@ -45,20 +45,20 @@ class SyncCancelDocument extends Command
         $cancelDocuments = $response['result'];
         foreach ($cancelDocuments as $document) {
             $einvoiceId = $document['internalId'];
+
             if (!GeneralService::isValidEInvoiceId($einvoiceId)) {
                 continue;
             }
+
             $uuid = $document['uuid'];
             $einvoiceHeader = EinvoiceHeader::where('EINV_VALIDATE_UUID', $uuid)
                 ->where('EINV_VALIDATE_STATUS', '<>', 'Cancelled')
                 ->where('EINV_VALIDATE_STATUS', '<>', 'Cancelled')
                 ->first();
-            \Log::info($einvoiceHeader);
             if (empty($einvoiceHeader)) {
                 continue;
             }
-            \Log::info('continue');
-            $updated = $einvoiceHeader->update([
+            $einvoiceHeader->update(attributes: [
                 'EINV_VALIDATE_STATUS' => 'Cancelled',
                 'EINV_OVERALL_STATUS' => 'Cancelled',
                 'EINV_CANCEL_DATETIME' => Carbon::parse($document['cancelDateTime'], config('services.einvoice.timezone'))->setTimezone(config('app.timezone')),
@@ -67,21 +67,20 @@ class SyncCancelDocument extends Command
                 'EINV_UPD_BY' => 1,
                 'EINV_STATUS' => 'C'
             ]);
-            if ($updated) {
-                $remark = 'Cancel Via E-Invoice';
-                $prefixService = new PrefixService($einvoiceId);
-                $default_user = User::find(config('constants.SYSTEM_USER_ID'));
-                $handlerService = new HandlerService($prefixService->getDocumentType(), $einvoiceId, $default_user->id, null, null, null);
-                $handlerService->getHandle()->delete(
-                    $remark,
-                    $default_user->StaffID,
-                    $default_user->id,
-                    false,
-                    true
-                );
-                $prefix = strtolower($prefixService->getDocumentType()->value);
-                DB::connection('mysql')->statement('CALL SP_INSERT_EINV_CANCEL(?, ?, ?, ?, ?)', [strtoupper($prefix), $einvoiceId, $default_user->id, Carbon::now(), $remark]);
-            }
+            $remark = 'Cancel Via E-Invoice';
+            $prefixService = new PrefixService($einvoiceId);
+            $default_user = User::find(config('constants.SYSTEM_USER_ID'));
+            $handlerService = new HandlerService($prefixService->getDocumentType(), $einvoiceId, $default_user->id, null, null, null);
+            $handlerService->getHandle()->delete(
+                $remark,
+                $default_user->StaffID,
+                $default_user->id,
+                false,
+                true
+            );
+            $prefix = substr(strtoupper($prefixService->getDocumentType()->value), 2);
+            DB::connection('mysql')->statement('CALL SP_INSERT_EINV_CANCEL(?, ?, ?, ?, ?)', [strtoupper($prefix), $einvoiceId, $default_user->id, Carbon::now(), $remark]);
+
         }
     }
 }

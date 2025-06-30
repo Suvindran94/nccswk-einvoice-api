@@ -250,8 +250,11 @@ class InvoiceHandler implements EInvoiceInsertHandlerInterface
             $data['INV_APV_STATUS'] = $this->approve_status;
             $data['INV_NOTY'] = $this->notification_id;
         }
-        $InvoiceHeader
-            ->update($data);
+        if (!empty($InvoiceHeader)) {
+            $InvoiceHeader
+                ->update($data);
+        }
+
 
         InvoiceDetail::where('INV_ID', $this->id)
             ->update([
