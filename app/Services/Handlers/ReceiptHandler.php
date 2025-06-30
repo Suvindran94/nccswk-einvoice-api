@@ -256,10 +256,10 @@ class ReceiptHandler implements EInvoiceInsertHandlerInterface
             'RCPT_NOTY' => $this->notification_id,
         ]);
     }
-    public function delete(?string $remark, ?int $staff_id, int $delete_user_id, bool $update_approve_information): void
+    public function delete(?string $remark, ?int $staff_id, int $delete_user_id, bool $update_approve_information, bool $from_einvoice = false): void
     {
         $receiptHeader = ReceiptHeader::where('RCPT_ID', $this->id)->first();
-        if ($receiptHeader->RCPT_APV_STATUS == 'A') {
+        if (!$from_einvoice && $receiptHeader->RCPT_APV_STATUS == 'A') {
             DB::select('CALL SP_INSERT_GL_REVENUE_DEL(?)', [$receiptHeader->RCPT_ID]);
         }
         $data = [

@@ -234,10 +234,10 @@ class SupplierCreditNoteHandler implements EInvoiceInsertHandlerInterface
             'DCN_NOTY' => $this->notification_id,
         ]);
     }
-    public function delete(?string $remark, ?int $staff_id, int $delete_user_id, bool $update_approve_information): void
+    public function delete(?string $remark, ?int $staff_id, int $delete_user_id, bool $update_approve_information, bool $from_einvoice = false): void
     {
         $sdcnHeader = SdcnHeader::where('SDCN_ID', $this->id)->first();
-        if ($sdcnHeader->DCN_APV_STATUS == 'A') {
+        if ($sdcnHeader->DCN_APV_STATUS == 'A' && $from_einvoice) {
             DB::select('CALL SP_INSERT_GL_SDCN_DEL(?)', [$sdcnHeader->SDCN_ID]);
         }
         $data = [

@@ -227,11 +227,11 @@ class InvoiceHandler implements EInvoiceInsertHandlerInterface
             'INV_NOTY' => $this->notification_id,
         ]);
     }
-    public function delete(?string $remark, ?int $staff_id, int $delete_user_id, bool $update_approve_information): void
+    public function delete(?string $remark, ?int $staff_id, int $delete_user_id, bool $update_approve_information, bool $from_einvoice = false): void
     {
         $InvoiceHeader = InvoiceHeader::where('INV_ID', $this->id)->first();
 
-        if ($InvoiceHeader->INV_STATUS == 'A' || $InvoiceHeader->INV_STATUS == 'C') {
+        if (!$from_einvoice && ($InvoiceHeader->INV_STATUS == 'A' || $InvoiceHeader->INV_STATUS == 'C')) {
             DB::select('CALL SP_INSERT_GL_INV_DEL(?,?,?,?)', [$InvoiceHeader->INV_ID, $remark, $staff_id, $delete_user_id]);
         }
 

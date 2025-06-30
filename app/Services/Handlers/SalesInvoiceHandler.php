@@ -235,7 +235,7 @@ class SalesInvoiceHandler implements EInvoiceInsertHandlerInterface
         ]);
     }
 
-    public function delete(?string $remark, ?int $staff_id, int $delete_user_id, bool $update_approve_information): void
+    public function delete(?string $remark, ?int $staff_id, int $delete_user_id, bool $update_approve_information, bool $from_einvoice = false): void
     {
         $salesInvoiceHeader = SalesInvoiceHEader::where('SI_ID', $this->id)->first();
         $doArray = !empty($salesInvoiceHeader) ? explode(',', $salesInvoiceHeader->SI_SOURCE_ID) : [];

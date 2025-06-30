@@ -227,11 +227,11 @@ class BillHandler implements EInvoiceInsertHandlerInterface
         ]);
     }
 
-    public function delete(?string $remark, ?int $staff_id, int $delete_user_id, bool $update_approve_information): void
+    public function delete(?string $remark, ?int $staff_id, int $delete_user_id, bool $update_approve_information, bool $from_einvoice = false): void
     {
         $billHeader = BillHeader::where('BILL_ID', $this->id)
             ->first();
-        if ($billHeader->BILL_STATUS == "A" || $billHeader->BILL_STATUS == "C") {
+        if (!$from_einvoice && ($billHeader->BILL_STATUS == "A" || $billHeader->BILL_STATUS == "C")) {
             DB::select('CALL SP_INSERT_GL_BILL_DEL(?,?,?,?)', [$billHeader->BILL_ID, $remark, $staff_id, $delete_user_id]);
         }
         $data = [

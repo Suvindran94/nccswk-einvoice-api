@@ -221,7 +221,7 @@ class PurchaseInvoiceHandler implements EInvoiceInsertHandlerInterface
             DB::connection('mysql')->select('CALL SP_INSERT_GL_PI(?,?)', [$purchaseInvoiceHeader->PI_ID, $purchaseInvoiceHeader->PI_CURR]);
         }
         Notification::send($purchaseInvoiceHeader->approver, new SupplyChainManagementApprovalNotification('App\Notifications\PIApprovalNoty', $purchaseInvoiceHeader));
-        // Mail::to($PurchaseInvoiceHeader->creator->email)->send(new PurhcaseInvoiceApprovalMail($PurchaseInvoiceHeader));
+        // Mail::to($purchaseInvoiceHeader->creator->email)->send(new PurhcaseInvoiceApprovalMail($PurchaseInvoiceHeader));
         Mail::to(env('TEST_MAIL_RECIPIENT'))->send(new PurhcaseInvoiceApprovalMail($purchaseInvoiceHeader));
     }
 
@@ -238,7 +238,7 @@ class PurchaseInvoiceHandler implements EInvoiceInsertHandlerInterface
         ]);
     }
 
-    public function delete(?string $remark, ?int $staff_id, int $delete_user_id, bool $update_approve_information): void
+    public function delete(?string $remark, ?int $staff_id, int $delete_user_id, bool $update_approve_information, bool $from_einvoice = false): void
     {
         $iddt = PurchaseInvoiceDetail::where('PI_ID', $this->id)->where('PI_SEQ_STATUS', '<>', 'D')->get();
         $grns = PurchaseInvoiceDetail::where('PI_ID', $this->id)->where('PI_SEQ_STATUS', '<>', 'D')->select('PI_SOU_NO')->groupBy('PI_SOU_NO')->pluck('PI_SOU_NO');
