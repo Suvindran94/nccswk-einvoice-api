@@ -66,7 +66,13 @@ class DocumentController extends Controller
                     $documentStatus = DocumentService::calculateDocumentStatus($overall_status, $document_summary_status);
                     $success = $documentStatus['success'];
                     if (!$success) {
-                        $handler->delete("E-Invoice status is" . $documentStatus['message'], null, config('constants.SYSTEM_USER_ID'), true);
+                        $handler->delete(
+                            "E-Invoice status is" . $documentStatus['message'],
+                            null,
+                            config('constants.SYSTEM_USER_ID'),
+                            true,
+                            false
+                        );
                         return new DocumentResponse(200, $success, $documentStatus['status']);
                     }
 
@@ -132,6 +138,7 @@ class DocumentController extends Controller
                 $request->input('staff_id'),
                 $request->input('user_id'),
                 false,
+                false
             );
 
             return new DocumentResponse(200, true, DocumentResponseStatus::DELETED);
