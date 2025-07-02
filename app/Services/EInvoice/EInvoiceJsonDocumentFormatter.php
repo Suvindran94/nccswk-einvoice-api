@@ -488,7 +488,7 @@ class EInvoiceJsonDocumentFormatter
                                         [
                                             'Telephone' => [
                                                 [
-                                                    '_' => !empty($eInvoiceHeader->EINV_SUP_CONTACT) ? str_replace(' ', '', $eInvoiceHeader->EINV_SUP_CONTACT) : '-',
+                                                    '_' => !empty($eInvoiceHeader->EINV_SUP_CONTACT) ? str_replace([' ', '-'], '', $eInvoiceHeader->EINV_SUP_CONTACT) : '-',
                                                 ],
                                             ],
                                             'ElectronicMail' => [
@@ -607,7 +607,7 @@ class EInvoiceJsonDocumentFormatter
                                         [
                                             'Telephone' => [
                                                 [
-                                                    '_' => !empty($eInvoiceHeader->EINV_BUY_CONTACT) ? str_replace(' ', '', $eInvoiceHeader->EINV_BUY_CONTACT) : '-',
+                                                    '_' => !empty($eInvoiceHeader->EINV_BUY_CONTACT) ? str_replace([' ', '-'], '', $eInvoiceHeader->EINV_BUY_CONTACT) : '-',
                                                 ],
                                             ],
                                             'ElectronicMail' => [
