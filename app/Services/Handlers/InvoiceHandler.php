@@ -209,8 +209,6 @@ class InvoiceHandler implements EInvoiceInsertHandlerInterface
             'INV_UPD_DATE' => Carbon::now(),
         ]);
 
-        \Log::info($invoiceHeader);
-        \Log::info(json_encode($invoiceHeader->creator));
         Notification::send($invoiceHeader->creator, new FinanceManagementApprovalNotification($invoiceHeader));
     }
 

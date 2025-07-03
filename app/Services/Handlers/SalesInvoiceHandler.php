@@ -215,7 +215,6 @@ class SalesInvoiceHandler implements EInvoiceInsertHandlerInterface
         }
         $salesInvoiceHeader->update($data);
         $salesInvoiceHeader->refresh();
-        \Log::info($salesInvoiceHeader);
         if ($this->approve_status == 'A') {
             DB::connection('mysql_admin')->select('CALL SP_INSERT_GL_SI(?)', [$salesInvoiceHeader->SI_ID]);
         }

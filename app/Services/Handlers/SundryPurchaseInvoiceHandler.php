@@ -203,7 +203,6 @@ class SundryPurchaseInvoiceHandler implements EInvoiceInsertHandlerInterface
         if ($this->approve_status == 'A') {
             DB::select('CALL SP_INSERT_GL_SPI(?)', [$sundryPurchaseInvoiceHeader->SPI_ID]);
         }
-        \Log::info(json_encode($sundryPurchaseInvoiceHeader->creator));
         Notification::send($sundryPurchaseInvoiceHeader->creator, new SupplyChainManagementApprovalNotification('App\Notifications\SPIApprovalNoty', $sundryPurchaseInvoiceHeader));
         Mail::to($sundryPurchaseInvoiceHeader->creator->email)->send(new SundryPurchaseInvoiceApprovalMail($sundryPurchaseInvoiceHeader));
 

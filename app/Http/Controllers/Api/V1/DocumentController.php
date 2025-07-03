@@ -51,7 +51,6 @@ class DocumentController extends Controller
                     $uid = $response['uid'];
                     sleep(seconds: 2);
                     $submissionResponse = $documentService->documentSubmission($uid);
-                    \Log::info(json_encode($submissionResponse));
                     $overall_status = $submissionResponse['overall_status'];
                     $document_summary_status = $submissionResponse['document_summary_status'];
                     $summary = $submissionResponse['summary'];

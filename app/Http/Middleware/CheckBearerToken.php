@@ -21,8 +21,6 @@ class CheckBearerToken
             return response()->json(['message' => 'Unauthorized'], 401);
         }
         $token = Str::after($header, 'Bearer ');
-        \Log::info($token);
-        \Log::info(config('services.api.token'));
         if ($token !== config('services.api.token')) {
             return response()->json(['message' => 'Invalid token'], 401);
         }

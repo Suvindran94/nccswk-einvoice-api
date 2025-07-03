@@ -36,13 +36,10 @@ class CheckDocumentStatusCommand extends Command
         $this->info('Starting e-invoice status check...');
         $limit = $this->option('limit');
         $inProgressDocuments = EInvoiceTableService::getInProgressHeader($limit);
-        \Log::info($inProgressDocuments);
         foreach ($inProgressDocuments as $document) {
             $id = $document->EINV_ID;
-            \Log::info($id);
             try {
                 $response = DocumentService::documentSubmission($document->EINV_SUBMISSION_UID);
-                \Log::info(json_encode($response));
                 $overall_status = $response['overall_status'];
                 $document_summary_status = $response['document_summary_status'];
                 $summary = $response['summary'];
@@ -71,7 +68,6 @@ class CheckDocumentStatusCommand extends Command
                         );
                         return;
                     }
-                    \Log::info('Approve');
                     $handler->update(true);
                 }
             } catch (Exception $e) {

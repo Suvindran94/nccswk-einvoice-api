@@ -35,14 +35,12 @@ class AuthCommand extends Command
 
         $token = $authService->refreshAccessToken();
 
-        if (! $token) {
+        if (!$token) {
             Log::error('Failed to obtain LHDN MyInvois access token. The refresh method returned null or empty.');
             $this->error('Failed to obtain LHDN MyInvois access token (null/empty response).');
-
-            return Command::FAILURE;
         }
-        $this->info('token:'.$token);
+        $this->info('token:' . $token);
 
-        return Command::SUCCESS;
+
     }
 }
