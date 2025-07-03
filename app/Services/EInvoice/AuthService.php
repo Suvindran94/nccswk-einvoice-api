@@ -60,11 +60,13 @@ class AuthService
     public function refreshAccessToken(): ?string
     {
         $cachedToken = Cache::get($this->token_cache_key);
+
+        $expired_at = $cachedToken['expires_at'] ?? null;
         try {
             if (
-                empty($cachedToken['expires_at']) ||
-                (!empty($cachedToken['expires_at']) && time() < (time() < ($cachedToken['expires_at'] - $this->token_expiry_buffer_seconds)))
+                empty($expired_at) || !empty($expired_at) && now()->greaterThan($expired_at)
             ) {
+
                 $response = Http::asForm()->post($this->base_url . '/connect/token', [
                     'client_id' => $this->client_id,
                     'client_secret' => $this->client_secret,
@@ -77,7 +79,7 @@ class AuthService
                 $expiresIn = $tokenData['expires_in'];
                 Cache::put($this->token_cache_key, [
                     'token' => $accessToken,
-                    'expires_at' => time() + $expiresIn,
+                    'expires_at' => now()->addSeconds($expiresIn - $this->token_expiry_buffer_seconds),
                 ], $expiresIn);
 
                 return $accessToken;
