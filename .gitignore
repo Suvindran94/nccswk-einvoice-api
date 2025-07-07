@@ -22,4 +22,4 @@ yarn-error.log
 /.zed
 /data
 .env
-.devcontainer
+/.devcontainer
