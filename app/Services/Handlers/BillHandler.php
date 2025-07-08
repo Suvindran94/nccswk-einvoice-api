@@ -196,7 +196,7 @@ class BillHandler implements EInvoiceInsertHandlerInterface
         $billHeader->update($data);
         $billHeader->refresh();
         if ($this->approve_status == 'A') {
-            DB::select('CALL SP_INSERT_GL_BILL(?)', [$billHeader->id]);
+            DB::select('CALL SP_INSERT_GL_BILL(?)', [$billHeader->BILL_ID]);
         }
         $seq = BillHistory::where('BILL_ID', $billHeader->BILL_ID)->count();
         BillHistory::insert([
