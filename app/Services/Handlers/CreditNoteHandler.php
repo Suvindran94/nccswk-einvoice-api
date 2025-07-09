@@ -33,99 +33,179 @@ class CreditNoteHandler implements EInvoiceInsertHandlerInterface
         try {
             DB::beginTransaction();
             DB::statement("insert into {$this->schema_fm}.EINV_HDR ( EINV_ID, EINV_SUP_NAME, EINV_BUY_NAME, EINV_SUP_TIN, EINV_SUP_REG_TYPE, EINV_SUP_SSM, EINV_SUP_ROC, 
-                    EINV_SUP_SST, EINV_SUP_TTX, EINV_SUP_EMAIL, EINV_SUP_MSIC, EINV_SUP_BUS_ACT_DESC, EINV_SUP_WEBSITE, 
-                    EINV_BUY_ARID, EINV_BUY_SHIPMARK, EINV_BUY_TIN, EINV_BUY_REG_TYPE, EINV_BUY_ROC, EINV_BUY_SST, 
-                    EINV_BUY_TTX, EINV_BUY_EMAIL, EINV_SUP_ADDR, EINV_SUP_ADDR0, EINV_SUP_ADDR1, EINV_SUP_ADDR2, 
-                    EINV_SUP_POSTCODE, EINV_SUP_CITY, EINV_SUP_STATE_ID, EINV_SUP_COUNTRY_ID, EINV_BUY_ADDR, 
-                    EINV_BUY_ADDR0, EINV_BUY_ADDR1, EINV_BUY_ADDR2, EINV_BUY_POSTCODE, EINV_BUY_CITY, 
-                    EINV_BUY_STATE_ID, EINV_BUY_COUNTRY_ID, EINV_SUP_CONTACT, EINV_SUP_CONTACT_2, EINV_SUP_FAX, EINV_BUY_CONTACT, 
-                    EINV_BUY_CONTACT_2, EINV_BUY_FAX, EINV_VERSION, EINV_TYPE, EINV_DOC_REF_ID, EINV_UIN_REF, EINV_DATE_TIME, 
-                    EINV_CURR, EINV_CURR_RATE, EINV_BUY_BANK_PAYABLE, EINV_REMARK_MODULE, 
-                    EINV_INV_TITLE, EINV_FREQ, EINV_PERIOD, EINV_PAYMENT_MODE, EINV_SUP_BANK_ACCT, EINV_PAYMENT_TERMS, 
-                    EINV_PREPAYMENT_AMT, EINV_PREPAYMENT_DATE, EINV_PREPAYMENT_REF, EINV_BILL_REF, EINV_REF_CUSTOM, 
-                    EINV_SHIP_RCPT_NAME, EINV_SHIP_RCPT_ADDR, EINV_SHIP_RCPT_ADDR0, EINV_SHIP_RCPT_ADDR1, 
-                    EINV_SHIP_RCPT_ADDR2, EINV_SHIP_RCPT_POSTCODE, EINV_SHIP_RCPT_CITY, EINV_SHIP_RCPT_STATE_ID, 
-                    EINV_SHIP_RCPT_COUNTRY_ID, EINV_SHIP_RCPT_TIN, EINV_SHIP_RCPT_ROC, EINV_INCOTERMS, EINV_FNL_DEST, 
-                    EINV_D_REMARK, EINV_FTA, EINV_AUTH_CERT, EINV_REF_CUSTOM_2, EINV_DETAIL_OTHERS_AMT, EINV_DETAIL_OTHERS_REASON, 
-                    EINV_TOTAL_ADD_DISC_AMT, EINV_TOTAL_ADD_DISC_REASON, EINV_TOTAL_ADD_FEE_AMT, EINV_TOTAL_ADD_FEE_REASON, 
-                    EINV_ROUNDING_AMT, EINV_TAX_CHAR, EINV_HAND_CHAR, EINV_TRANS_CHAR, EINV_INSR_CHAR, EINV_OTH_CHAR, 
-                    EINV_TOTAL_AMT, EINV_CREATE_BY_NAME, EINV_CREATE_BY, EINV_CREATE_DATE, EINV_UPD_BY, EINV_UPD_DATE, EINV_STATUS )
-                select  DCN_HDR.DCN_ID, CO_NAME1, AR_NAME1, CO_TIN, CO_REG_TYPE, CO_ROG, CO_ROG_NEW, 
-                    ifnull(CO_SST,'NA') as CO_SST, ifnull(CO_TT,'NA') as CO_TTX,  CO_EMAIL as EINV_SUP_EMAIL, CO_MSIC, CO_BUSINESS_DESC, CO_WEBSITE,
-                    AR_ID, AR_NAMES, EINV_TIN, trim((select REG_TYPE from {$this->schema_sm}.MTN_REG_TYPE where ID = AR_MST_CUSTOMER.EINV_REG_TYPE)), AR_ROC_NEW, ifnull(AR_SST_REG_NO,'NA') as AR_SST_REG_NO, 
-                    ifnull(AR_TTX_REG_NO,'NA') as AR_TTX_REG_NO, EINV_AR_EMAIL,
-                    concat(trim(ifnull(CO_ADDR1,'')), ' ', trim(ifnull(CO_ADDR2, '')),  trim(concat(' ', trim(ifnull(CO_ADDR3, '')), ' ' , trim(ifnull(CO_ADDR4, '')), ' ')), 
+                EINV_SUP_SST, EINV_SUP_TTX, EINV_SUP_EMAIL, EINV_SUP_MSIC, EINV_SUP_BUS_ACT_DESC, EINV_SUP_WEBSITE, 
+                EINV_BUY_ARID, EINV_BUY_SHIPMARK, EINV_BUY_TIN, EINV_BUY_REG_TYPE, EINV_BUY_ROC, EINV_BUY_SST, 
+                EINV_BUY_TTX, EINV_BUY_EMAIL, EINV_SUP_ADDR, EINV_SUP_ADDR0, EINV_SUP_ADDR1, EINV_SUP_ADDR2, 
+                EINV_SUP_POSTCODE, EINV_SUP_CITY, EINV_SUP_STATE_ID, EINV_SUP_COUNTRY_ID, EINV_BUY_ADDR, 
+                EINV_BUY_ADDR0, EINV_BUY_ADDR1, EINV_BUY_ADDR2, EINV_BUY_POSTCODE, EINV_BUY_CITY, 
+                EINV_BUY_STATE_ID, EINV_BUY_COUNTRY_ID, EINV_SUP_CONTACT, EINV_SUP_CONTACT_2, EINV_SUP_FAX, EINV_BUY_CONTACT, 
+                EINV_BUY_CONTACT_2, EINV_BUY_FAX, EINV_VERSION, EINV_TYPE, EINV_DOC_REF_ID, EINV_UIN_REF, EINV_UIN_REF_JSON, 
+                EINV_DATE_TIME, 
+                EINV_CURR, EINV_CURR_RATE, EINV_BUY_BANK_PAYABLE, EINV_REMARK_MODULE, 
+                EINV_INV_TITLE, EINV_FREQ, EINV_PERIOD, EINV_PAYMENT_MODE, EINV_SUP_BANK_ACCT, EINV_PAYMENT_TERMS, 
+                EINV_PREPAYMENT_AMT, EINV_PREPAYMENT_DATE, EINV_PREPAYMENT_REF, EINV_BILL_REF, EINV_REF_CUSTOM, 
+                EINV_SHIP_RCPT_NAME, EINV_SHIP_RCPT_ADDR, EINV_SHIP_RCPT_ADDR0, EINV_SHIP_RCPT_ADDR1, 
+                EINV_SHIP_RCPT_ADDR2, EINV_SHIP_RCPT_POSTCODE, EINV_SHIP_RCPT_CITY, EINV_SHIP_RCPT_STATE_ID, 
+                EINV_SHIP_RCPT_COUNTRY_ID, EINV_SHIP_RCPT_TIN, EINV_SHIP_RCPT_ROC, EINV_INCOTERMS, EINV_FNL_DEST, 
+                EINV_D_REMARK, EINV_FTA, EINV_AUTH_CERT, EINV_REF_CUSTOM_2, EINV_DETAIL_OTHERS_AMT, EINV_DETAIL_OTHERS_REASON, 
+                EINV_TOTAL_ADD_DISC_AMT, EINV_TOTAL_ADD_DISC_REASON, EINV_TOTAL_ADD_FEE_AMT, EINV_TOTAL_ADD_FEE_REASON, 
+                EINV_ROUNDING_AMT, EINV_TAX_CHAR, EINV_HAND_CHAR, EINV_TRANS_CHAR, EINV_INSR_CHAR, EINV_OTH_CHAR, 
+                EINV_TOTAL_AMT, EINV_CREATE_BY_NAME, EINV_CREATE_BY, EINV_CREATE_DATE, EINV_UPD_BY, EINV_UPD_DATE, EINV_STATUS )
+            select  DCN_HDR.DCN_ID, CO_NAME1, AR_NAME1, CO_TIN, CO_REG_TYPE, CO_ROG, CO_ROG_NEW, 
+                ifnull(CO_SST,'NA') as CO_SST, ifnull(CO_TT,'NA') as CO_TTX,  CO_EMAIL as EINV_SUP_EMAIL, CO_MSIC, CO_BUSINESS_DESC, CO_WEBSITE,
+                AR_ID, AR_NAMES, EINV_TIN, (select REG_TYPE from {$this->schema_sm}.MTN_REG_TYPE where ID = EINV_REG_TYPE) as EINV_REG_TYPE, AR_ROC_NEW, ifnull(AR_SST_REG_NO,'NA') as AR_SST_REG_NO, 
+                ifnull(AR_TTX_REG_NO,'NA') as AR_TTX_REG_NO, EINV_AR_EMAIL,
+                concat(trim(ifnull(CO_ADDR1,'')), ' ', trim(ifnull(CO_ADDR2, '')),  trim(concat(' ', trim(ifnull(CO_ADDR3, '')), ' ' , trim(ifnull(CO_ADDR4, '')), ' ')), 
                     ' ', trim(ifnull(MTN_CO.POSTCODE,'')), ' ', trim((select CITY_NAME from {$this->schema_sm}.MTN_CITY where ID = MTN_CO.CITY_ID) ),
                     ', ', trim((select MTN_STATE.STATE_NAME  from {$this->schema_sm}.MTN_STATE where ID = MTN_CO.STATE_ID ) ),
                     ', ', trim((select MTN_COUNTRY.COUNTRY_NAME from {$this->schema_sm}.MTN_COUNTRY where COUNTRY_ISO_CODE = MTN_CO.COUNTRY_ID) ),
                     '. '),
-                    CO_ADDR1, CO_ADDR2, concat(trim(ifnull(CO_ADDR3, '')), ' ' , trim(ifnull(CO_ADDR4, ''))), 
-                    MTN_CO.POSTCODE as CO_POSTCODE, 
-                    (select CITY_NAME from {$this->schema_sm}.MTN_CITY where ID = MTN_CO.CITY_ID) as CO_CITY_NAME, 
-                    (select MTN_STATE.EINV_STATE_CODE from {$this->schema_sm}.MTN_STATE where ID = MTN_CO.STATE_ID ) as CO_IRB_STATE,
-                    (select MTN_COUNTRY.EINV_COUNTRY_CODE from {$this->schema_sm}.MTN_COUNTRY where COUNTRY_ISO_CODE = MTN_CO.COUNTRY_ID) as CO_IRB_COUNTRY,
-                    concat(trim(ifnull(AR_ADDR1,'')), ' ', trim(ifnull(AR_ADDR2, '')),  trim(concat(' ', trim(ifnull(AR_ADDR3, '')), ' ' , trim(ifnull(AR_ADDR4, '')), ' ')), 
-                        ' ', trim(ifnull(AR_MST_CUSTOMER.POSTCODE,'')), ', ', if((select CITY_NAME from {$this->schema_sm}.MTN_CITY where ID = AR_MST_CUSTOMER.CITY_ID) = 'NONE', '', 
-                                                                                        concat((select trim(CITY_NAME) from {$this->schema_sm}.MTN_CITY where ID = AR_MST_CUSTOMER.CITY_ID),', ')),
-                        if((select MTN_STATE.STATE_NAME  from {$this->schema_sm}.MTN_STATE where ID = AR_MST_CUSTOMER.STATE_ID ) = 'NONE', '',
-                            concat((select trim(MTN_STATE.STATE_NAME) from {$this->schema_sm}.MTN_STATE where ID = AR_MST_CUSTOMER.STATE_ID ),', ')),
-                        trim((select MTN_COUNTRY.COUNTRY_NAME from {$this->schema_sm}.MTN_COUNTRY where COUNTRY_ISO_CODE = AR_MST_CUSTOMER.COUNTRY_ID) ),
-                        '. '),
-                    AR_ADDR1, AR_ADDR2, concat(trim(ifnull(AR_ADDR3, '')), ' ' , trim(ifnull(AR_ADDR4, ''))), 
-                    ifnull(AR_MST_CUSTOMER.POSTCODE,''), 
-                    (select MTN_CITY.CITY_NAME from {$this->schema_sm}.MTN_CITY where ID = AR_MST_CUSTOMER.CITY_ID) as CITY_NAME, 
-                    (select MTN_STATE.EINV_STATE_CODE from {$this->schema_sm}.MTN_STATE where ID = AR_MST_CUSTOMER.STATE_ID ) as IRB_STATE,
-                    (select MTN_COUNTRY.EINV_COUNTRY_CODE from {$this->schema_sm}.MTN_COUNTRY where COUNTRY_ISO_CODE = AR_MST_CUSTOMER.COUNTRY_ID) as IRB_COUNTRY, 
-                    CO_TEL1, CO_TEL2, CO_FAX1,
-                    AR_TEL1, AR_TEL2, 
-                    AR_FAX1, 
-                    CO_EINV_VERSION as EINV_VERSION,
-                    if(DCN_HDR.DCN_OPT = 'CN','02','03') as EINV_TYPE,
-                    ifnull((select ifnull(EINV_ID, '-') from {$this->schema_fm}.EINV_HDR 
-                    where EINV_ID = (select DISTINCT DCN_SOU_ID from {$this->schema_fm}.DCN_DT where DCN_DT.DCN_SEQ_STATUS <> 'D' and  DCN_DT.deleted_at is null and DCN_DT.DCN_ID = DCN_HDR.DCN_ID) 
-                    and EINV_HDR.EINV_OVERALL_STATUS = 'Valid' and EINV_HDR.EINV_VALIDATE_STATUS = 'Valid'), '-')  as EINV_DOC_REF_ID, 
-                    ifnull((select ifnull(EINV_VALIDATE_UUID, 'NA') from {$this->schema_fm}.EINV_HDR 
-                    where EINV_ID = (select DISTINCT DCN_SOU_ID from {$this->schema_fm}.DCN_DT where DCN_DT.DCN_SEQ_STATUS <> 'D' and  DCN_DT.deleted_at is null and DCN_DT.DCN_ID = DCN_HDR.DCN_ID) 
-                    and EINV_HDR.EINV_OVERALL_STATUS = 'Valid' and EINV_HDR.EINV_VALIDATE_STATUS = 'Valid'), 'NA') as EINV_UIN_REF, 
-                    now() as EINV_DATE_TIME,
-                    DCN_HDR.DCN_CURR, 
-                    DCN_HDR.LVC_CURR_RATE,
-                    AR_BANK, 'AR_SI' as EINV_REMARK_MODULE,
-                    AR_INV_TITLE,
-                    null as EINV_FREQ,	
-                    null as EINV_PERIOD,	
-                    null as EINV_PAYMENT_MODE,	
-                    null as EINV_SUP_BANK_ACCT, 
-                    (select TERM_DESC from {$this->schema_sm}.MTN_TERM where MTN_TERM.TERM_ID = DCN_HDR.DCN_TERM) as EINV_TERM,
-                    0 as EINV_PREPAYMENT_AMT, null as EINV_PREPAYMENT_DATE, '-' as EINV_PREPAYMENT_REF, 
-                    null as EINV_BILL_REF, null as EINV_REF_CUSTOM, 
-                    AR_NAME1 as EINV_SHIP_RCPT_NAME, 
-                    concat(trim(ifnull(AR_ADDR1,'')), ' ', trim(ifnull(AR_ADDR2, '')),  trim(concat(' ', trim(ifnull(AR_ADDR3, '')), ' ' , trim(ifnull(AR_ADDR4, '')), ' ')), 
-                        ' ', trim(ifnull(AR_MST_CUSTOMER.POSTCODE,'')), ', ', if((select CITY_NAME from {$this->schema_sm}.MTN_CITY where ID = AR_MST_CUSTOMER.CITY_ID) = 'NONE', '', 
-                                                                                        concat((select trim(CITY_NAME) from {$this->schema_sm}.MTN_CITY where ID = AR_MST_CUSTOMER.CITY_ID),', ')),
-                        if((select MTN_STATE.STATE_NAME  from {$this->schema_sm}.MTN_STATE where ID = AR_MST_CUSTOMER.STATE_ID ) = 'NONE', '',
-                            concat((select trim(MTN_STATE.STATE_NAME) from {$this->schema_sm}.MTN_STATE where ID = AR_MST_CUSTOMER.STATE_ID ),', ')),
-                        trim((select MTN_COUNTRY.COUNTRY_NAME from {$this->schema_sm}.MTN_COUNTRY where COUNTRY_ISO_CODE = AR_MST_CUSTOMER.COUNTRY_ID) ),
-                        '. ') as EINV_SHIP_RCPT_ADDR, 
-                    AR_ADDR1 as EINV_SHIP_RCPT_ADDR0, AR_ADDR2 as EINV_SHIP_RCPT_ADDR1, concat(trim(ifnull(AR_ADDR3, '')), ' ' , trim(ifnull(AR_ADDR4, ''))) as EINV_SHIP_RCPT_ADDR2, 
-                    ifnull(AR_MST_CUSTOMER.POSTCODE,'') as EINV_SHIP_RCPT_POSTCODE, 
-                    (select MTN_CITY.CITY_NAME from {$this->schema_sm}.MTN_CITY where ID = AR_MST_CUSTOMER.CITY_ID) as EINV_SHIP_RCPT_CITY, 
-                    (select MTN_STATE.EINV_STATE_CODE from {$this->schema_sm}.MTN_STATE where ID = AR_MST_CUSTOMER.STATE_ID ) as EINV_SHIP_RCPT_STATE_ID,
-                    (select MTN_COUNTRY.EINV_COUNTRY_CODE from {$this->schema_sm}.MTN_COUNTRY where COUNTRY_ISO_CODE = AR_MST_CUSTOMER.COUNTRY_ID) as EINV_SHIP_RCPT_COUNTRY_ID, 
-                    EINV_TIN as EINV_SHIP_RCPT_TIN, AR_ROC_NEW as EINV_SHIP_RCPT_ROC, 'NA' as EINV_INCOTERMS, 
-                    '-' as EINV_FNL_DEST,
-                    DCN_NOTES as EINV_D_REMARK,
-                    null as EINV_FTA, null as EINV_AUTH_CERT, '-' as EINV_REF_CUSTOM_2, 0 as EINV_DETAIL_OTHERS_AMT, null as EINV_DETAIL_OTHERS_REASON, 
-                    0 as EINV_TOTAL_ADD_DISC_AMT, null as EINV_TOTAL_ADD_DISC_REASON, 0 as EINV_TOTAL_ADD_FEE_AMT, null as EINV_TOTAL_ADD_FEE_REASON, 
-                    DCN_HDR.DCN_ROUNDING as EINV_ROUNDING_AMT, DCN_HDR.DCN_TAX_CHAR as EINV_TAX_CHAR, 0 as EINV_HAND_CHAR, 
-                    0 as EINV_TRANS_CHAR, 0 as EINV_INSR_CHAR, 0 as EINV_OTH_CHAR, 
-                    DCN_HDR.DCN_AMT as EINV_TOTAL_AMT, 
-                    (select upper(users.name) from {$this->schema_admin}.users where id = DCN_HDR.DCN_CREATE_BY) as EINV_CREATE_BY_NAME, 
-                    DCN_HDR.DCN_CREATE_BY as EINV_CREATE_BY, now() as EINV_CREATE_DATE, DCN_HDR.DCN_UPD_BY as EINV_UPD_BY, DCN_HDR.DCN_UPD_DATE as EINV_UPD_DATE, 
-                    'P' as EINV_STATUS 
-                from {$this->schema_sm}.MTN_CO, {$this->schema_fm}.DCN_HDR, {$this->schema_sm}.AR_MST_CUSTOMER
-                    where DCN_HDR.DCN_AR = AR_MST_CUSTOMER.AR_ID
-                    and DCN_ID = :id;", ['id' => $this->id]);
+            CO_ADDR1, CO_ADDR2, concat(trim(ifnull(CO_ADDR3, '')), ' ' , trim(ifnull(CO_ADDR4, ''))), 
+            MTN_CO.POSTCODE as CO_POSTCODE, 
+            (select CITY_NAME from {$this->schema_sm}.MTN_CITY where ID = MTN_CO.CITY_ID) as CO_CITY_NAME, 
+            (select MTN_STATE.EINV_STATE_CODE from {$this->schema_sm}.MTN_STATE where ID = MTN_CO.STATE_ID ) as CO_IRB_STATE,
+            (select MTN_COUNTRY.EINV_COUNTRY_CODE from {$this->schema_sm}.MTN_COUNTRY where COUNTRY_ISO_CODE = MTN_CO.COUNTRY_ID) as CO_IRB_COUNTRY,
+            concat(trim(ifnull(AR_ADDR1,'')), ' ', trim(ifnull(AR_ADDR2, '')),  trim(concat(' ', trim(ifnull(AR_ADDR3, '')), ' ' , trim(ifnull(AR_ADDR4, '')), ' ')), 
+                ' ', trim(ifnull(AR_MST_CUSTOMER.POSTCODE,'')), ', ', if((select CITY_NAME from {$this->schema_sm}.MTN_CITY where ID = AR_MST_CUSTOMER.CITY_ID) = 'NONE', '', 
+                                                                                concat((select trim(CITY_NAME) from {$this->schema_sm}.MTN_CITY where ID = AR_MST_CUSTOMER.CITY_ID),', ')),
+                if((select MTN_STATE.STATE_NAME  from {$this->schema_sm}.MTN_STATE where ID = AR_MST_CUSTOMER.STATE_ID ) = 'NONE', '',
+                    concat((select trim(MTN_STATE.STATE_NAME) from {$this->schema_sm}.MTN_STATE where ID = AR_MST_CUSTOMER.STATE_ID ),', ')),
+                trim((select MTN_COUNTRY.COUNTRY_NAME from {$this->schema_sm}.MTN_COUNTRY where COUNTRY_ISO_CODE = AR_MST_CUSTOMER.COUNTRY_ID) ),
+                '. '),
+            AR_ADDR1, AR_ADDR2, concat(trim(ifnull(AR_ADDR3, '')), ' ' , trim(ifnull(AR_ADDR4, ''))), 
+            ifnull(AR_MST_CUSTOMER.POSTCODE,''), 
+            (select MTN_CITY.CITY_NAME from {$this->schema_sm}.MTN_CITY where ID = AR_MST_CUSTOMER.CITY_ID) as CITY_NAME, 
+            (select MTN_STATE.EINV_STATE_CODE from {$this->schema_sm}.MTN_STATE where ID = AR_MST_CUSTOMER.STATE_ID ) as IRB_STATE,
+            (select MTN_COUNTRY.EINV_COUNTRY_CODE from {$this->schema_sm}.MTN_COUNTRY where COUNTRY_ISO_CODE = AR_MST_CUSTOMER.COUNTRY_ID) as IRB_COUNTRY, 
+            CO_TEL1, CO_TEL2, CO_FAX1,
+            AR_TEL1, AR_TEL2, 
+            AR_FAX1, 
+            CO_EINV_VERSION as EINV_VERSION,
+            if(DCN_HDR.DCN_OPT = 'CN','02','03') as EINV_TYPE,
+            (SELECT group_concat(EINV_HDR.EINV_ID SEPARATOR ', ')
+    			from 
+    			(
+    			  SELECT 
+    			    TRIM(SUBSTRING_INDEX(SUBSTRING_INDEX(DCN_DT.DCN_SOU_ID_EINV, ',', n.n), ',', -1)) AS SOURCE_ID
+    			  FROM
+    			    {$this->schema_fm}.DCN_DT DCN_DT
+    			  JOIN
+    			    (
+    			      SELECT 1 AS n UNION ALL
+    			      SELECT 2 UNION ALL
+    			      SELECT 3 UNION ALL
+    			      SELECT 4 UNION ALL
+    			      SELECT 5
+    			    ) n
+    			  ON 
+    			    n.n <= 1 + LENGTH(DCN_DT.DCN_SOU_ID_EINV) - LENGTH(REPLACE(DCN_DT.DCN_SOU_ID_EINV, ',', ''))
+    			  WHERE  DCN_DT.deleted_at is null 
+    			  and DCN_DT.DCN_SEQ_STATUS <> 'D'
+    			  and DCN_DT.DCN_ID = :id1
+    			) Tbl_DOC_REF 
+    			JOIN {$this->schema_fm}.EINV_HDR EINV_HDR
+    			on EINV_HDR.EINV_ID = Tbl_DOC_REF.SOURCE_ID
+    			where EINV_HDR.EINV_OVERALL_STATUS = 'Valid' 
+    			and EINV_HDR.EINV_VALIDATE_STATUS = 'Valid'
+    		) as EINV_DOC_REF_ID, 
+    		(SELECT group_concat(EINV_HDR.EINV_VALIDATE_UUID SEPARATOR ', ')
+    			from 
+    			(
+    			  SELECT 
+    			    TRIM(SUBSTRING_INDEX(SUBSTRING_INDEX(DCN_DT.DCN_SOU_ID_EINV, ',', n.n), ',', -1)) AS SOURCE_ID
+    			  FROM
+    			    {$this->schema_fm}.DCN_DT DCN_DT
+    			  JOIN
+    			    (
+    			      SELECT 1 AS n UNION ALL
+    			      SELECT 2 UNION ALL
+    			      SELECT 3 UNION ALL
+    			      SELECT 4 UNION ALL
+    			      SELECT 5
+    			    ) n
+    			  ON 
+    			    n.n <= 1 + LENGTH(DCN_DT.DCN_SOU_ID_EINV) - LENGTH(REPLACE(DCN_DT.DCN_SOU_ID_EINV, ',', ''))
+    			  WHERE  DCN_DT.deleted_at is null 
+    			  and DCN_DT.DCN_SEQ_STATUS <> 'D'
+    			  and DCN_DT.DCN_ID = :id2
+    			) Tbl_DOC_REF 
+    			JOIN {$this->schema_fm}.EINV_HDR EINV_HDR
+    			on EINV_HDR.EINV_ID = Tbl_DOC_REF.SOURCE_ID
+    			where EINV_HDR.EINV_OVERALL_STATUS = 'Valid' 
+    			and EINV_HDR.EINV_VALIDATE_STATUS = 'Valid'
+    		) as EINV_UIN_REF, 
+                (SELECT 
+                        JSON_ARRAYAGG(
+                            JSON_OBJECT(
+                            'id', EINV_HDR.EINV_ID,
+                            'uuid', EINV_HDR.EINV_VALIDATE_UUID
+                            )
+                        ) AS result_json
+                        FROM 
+                        (
+                        SELECT 
+                            TRIM(SUBSTRING_INDEX(SUBSTRING_INDEX(DCN_DT.DCN_SOU_ID_EINV, ',', n.n), ',', -1)) AS SOURCE_ID
+                        FROM
+                            {$this->schema_fm}.DCN_DT DCN_DT
+                        JOIN
+                            (
+                            SELECT 1 AS n UNION ALL
+                            SELECT 2 UNION ALL
+                            SELECT 3 UNION ALL
+                            SELECT 4 UNION ALL
+                            SELECT 5
+                            ) n
+                        ON 
+                            n.n <= 1 + LENGTH(DCN_DT.DCN_SOU_ID_EINV) - LENGTH(REPLACE(DCN_DT.DCN_SOU_ID_EINV, ',', ''))
+                        WHERE  
+                            DCN_DT.deleted_at IS NULL
+                            AND DCN_DT.DCN_SEQ_STATUS <> 'D'
+                            AND DCN_DT.DCN_ID = :id3
+                        ) Tbl_DOC_REF
+                        JOIN {$this->schema_fm}.EINV_HDR EINV_HDR
+                        ON EINV_HDR.EINV_ID = Tbl_DOC_REF.SOURCE_ID
+                        WHERE 
+                        EINV_HDR.EINV_OVERALL_STATUS = 'Valid'
+                        AND EINV_HDR.EINV_VALIDATE_STATUS = 'Valid') as EINV_UIN_REF_JSON, 
+                now() as EINV_DATE_TIME,
+                DCN_HDR.DCN_CURR, 
+                DCN_HDR.LVC_CURR_RATE,
+                AR_BANK, 'AR_SI' as EINV_REMARK_MODULE,
+                AR_INV_TITLE,
+                null as EINV_FREQ,	
+                null as EINV_PERIOD,	
+                null as EINV_PAYMENT_MODE,	
+                null as EINV_SUP_BANK_ACCT, 
+                (select TERM_DESC from {$this->schema_sm}.MTN_TERM where MTN_TERM.TERM_ID = DCN_HDR.DCN_TERM) as EINV_TERM,
+                0 as EINV_PREPAYMENT_AMT, null as EINV_PREPAYMENT_DATE, '-' as EINV_PREPAYMENT_REF, 
+                null as EINV_BILL_REF, null as EINV_REF_CUSTOM, 
+                AR_NAME1 as EINV_SHIP_RCPT_NAME, 
+                concat(trim(ifnull(AR_ADDR1,'')), ' ', trim(ifnull(AR_ADDR2, '')),  trim(concat(' ', trim(ifnull(AR_ADDR3, '')), ' ' , trim(ifnull(AR_ADDR4, '')), ' ')), 
+                    ' ', trim(ifnull(AR_MST_CUSTOMER.POSTCODE,'')), ', ', if((select CITY_NAME from {$this->schema_sm}.MTN_CITY where ID = AR_MST_CUSTOMER.CITY_ID) = 'NONE', '', 
+                                                                                    concat((select trim(CITY_NAME) from {$this->schema_sm}.MTN_CITY where ID = AR_MST_CUSTOMER.CITY_ID),', ')),
+                    if((select MTN_STATE.STATE_NAME  from {$this->schema_sm}.MTN_STATE where ID = AR_MST_CUSTOMER.STATE_ID ) = 'NONE', '',
+                        concat((select trim(MTN_STATE.STATE_NAME) from {$this->schema_sm}.MTN_STATE where ID = AR_MST_CUSTOMER.STATE_ID ),', ')),
+                    trim((select MTN_COUNTRY.COUNTRY_NAME from {$this->schema_sm}.MTN_COUNTRY where COUNTRY_ISO_CODE = AR_MST_CUSTOMER.COUNTRY_ID) ),
+                    '. ') as EINV_SHIP_RCPT_ADDR, 
+                AR_ADDR1 as EINV_SHIP_RCPT_ADDR0, AR_ADDR2 as EINV_SHIP_RCPT_ADDR1, concat(trim(ifnull(AR_ADDR3, '')), ' ' , trim(ifnull(AR_ADDR4, ''))) as EINV_SHIP_RCPT_ADDR2, 
+                ifnull(AR_MST_CUSTOMER.POSTCODE,'') as EINV_SHIP_RCPT_POSTCODE, 
+                (select MTN_CITY.CITY_NAME from {$this->schema_sm}.MTN_CITY where ID = AR_MST_CUSTOMER.CITY_ID) as EINV_SHIP_RCPT_CITY, 
+                (select MTN_STATE.EINV_STATE_CODE from {$this->schema_sm}.MTN_STATE where ID = AR_MST_CUSTOMER.STATE_ID ) as EINV_SHIP_RCPT_STATE_ID,
+                (select MTN_COUNTRY.EINV_COUNTRY_CODE from {$this->schema_sm}.MTN_COUNTRY where COUNTRY_ISO_CODE = AR_MST_CUSTOMER.COUNTRY_ID) as EINV_SHIP_RCPT_COUNTRY_ID, 
+                EINV_TIN as EINV_SHIP_RCPT_TIN, AR_ROC_NEW as EINV_SHIP_RCPT_ROC, 'NA' as EINV_INCOTERMS, 
+                '-' as EINV_FNL_DEST,
+                DCN_NOTES as EINV_D_REMARK,
+                null as EINV_FTA, null as EINV_AUTH_CERT, '-' as EINV_REF_CUSTOM_2, 0 as EINV_DETAIL_OTHERS_AMT, null as EINV_DETAIL_OTHERS_REASON, 
+                0 as EINV_TOTAL_ADD_DISC_AMT, null as EINV_TOTAL_ADD_DISC_REASON, 0 as EINV_TOTAL_ADD_FEE_AMT, null as EINV_TOTAL_ADD_FEE_REASON, 
+                DCN_HDR.DCN_ROUNDING as EINV_ROUNDING_AMT, DCN_HDR.DCN_TAX_CHAR as EINV_TAX_CHAR, 0 as EINV_HAND_CHAR, 
+                0 as EINV_TRANS_CHAR, 0 as EINV_INSR_CHAR, 0 as EINV_OTH_CHAR, 
+                DCN_HDR.DCN_AMT as EINV_TOTAL_AMT, 
+                (select upper(users.name) from {$this->schema_admin}.users where id = DCN_HDR.DCN_CREATE_BY) as EINV_CREATE_BY_NAME, 
+                DCN_HDR.DCN_CREATE_BY as EINV_CREATE_BY, now() as EINV_CREATE_DATE, DCN_HDR.DCN_UPD_BY as EINV_UPD_BY, DCN_HDR.DCN_UPD_DATE as EINV_UPD_DATE, 
+                'P' as EINV_STATUS 
+            from {$this->schema_sm}.MTN_CO, {$this->schema_fm}.DCN_HDR, {$this->schema_sm}.AR_MST_CUSTOMER
+            where DCN_HDR.DCN_AR = AR_MST_CUSTOMER.AR_ID
+            and DCN_ID = :id4", ['id1' => $this->id, 'id2' => $this->id, 'id3' => $this->id, 'id4' => $this->id]);
 
             DB::statement("insert into {$this->schema_fm}.EINV_DT ( EINV_ID, EINV_SEQ, EINV_SOU_NO, EINV_SOU_SEQ, EINV_SEQ_STATUS, EINV_CLASSIFICATION, EINV_PRODUCT_REF1, EINV_PRODUCT_REF2, 
                         EINV_PRODUCT_DESC, EINV_PRODUCT_REMARKS, EINV_UNIT_PRICE, EINV_NETT_UNIT_PRICE, EINV_TAX_TYPE, EINV_TAX_RATE, EINV_TAX_AMT, 
