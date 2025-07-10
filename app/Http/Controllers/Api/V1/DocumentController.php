@@ -68,7 +68,7 @@ class DocumentController extends Controller
                         $handler->delete(
                             "E-Invoice status is" . $documentStatus['message'],
                             null,
-                            config('constants.SYSTEM_USER_ID'),
+                            config('constants.system_user_id'),
                             true,
                             false
                         );

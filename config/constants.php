@@ -1,5 +1,5 @@
 <?php
 
 return [
-    'SYSTEM_USER_ID' => 1,
+    'system_user_id' => 1,
 ];

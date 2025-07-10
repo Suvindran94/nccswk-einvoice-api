@@ -21,7 +21,7 @@ class DigitalSigner
     {
         $this->certificate = Storage::disk('digital_certificates_disk')->get('ncc_solutions_sdn_bhd.cer');
         $this->privateKey = Storage::disk('digital_certificates_disk')->get('ncc_solutions_sdn_bhd.privkey.pem');
-        $this->privateKeyPassphrase = config('services.einvoice.PRIVATE_KEY_PASSPHRASE');
+        $this->privateKeyPassphrase = config('services.einvoice.private_key_passphrase');
     }
 
     /**

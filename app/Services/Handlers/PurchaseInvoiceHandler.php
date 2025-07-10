@@ -13,7 +13,7 @@ use Carbon\Carbon;
 use App\Contracts\EInvoiceInsertHandlerInterface;
 use App\Models\PurchaseInvoiceHeader;
 use App\Models\PurchaseInvoiceDetail;
-use App\Models\PurchaseInvoiceHistory;
+use App\Models\EmailPermission;
 use Exception;
 use Illuminate\Database\QueryException;
 
@@ -27,12 +27,14 @@ class PurchaseInvoiceHandler implements EInvoiceInsertHandlerInterface
 
     protected $schema_scm;
 
+    protected $email_module_name;
     public function __construct(protected string $id, protected int $user_id, protected ?string $approve_status, protected ?string $approve_remark, protected ?int $notification_id)
     {
         $this->schema_fm = config('database.connections.mysql_fm.database');
         $this->schema_sm = config('database.connections.mysql_sm.database');
         $this->schema_admin = config('database.connections.mysql_admin.database');
         $this->schema_scm = config('database.connections.mysql_scm.database');
+        $this->email_module_name = "Purchase-Invoice";
     }
 
     public function insertToEInvoiceTables(): void
@@ -221,6 +223,10 @@ class PurchaseInvoiceHandler implements EInvoiceInsertHandlerInterface
             DB::connection('mysql')->select('CALL SP_INSERT_GL_PI(?,?)', [$purchaseInvoiceHeader->PI_ID, $purchaseInvoiceHeader->PI_CURR]);
         }
         Notification::send($purchaseInvoiceHeader->approver, new SupplyChainManagementApprovalNotification('App\Notifications\PIApprovalNoty', $purchaseInvoiceHeader));
+        if (optional(EmailPermission::where('moduleName', $this->email_module_name)->first())->autoSendEmail) {
+            $recipient = config('mail.use_override') ? config('mail.override_recipient') : $purchaseInvoiceHeader->creator->email;
+            Mail::to($recipient)->send(new PurhcaseInvoiceApprovalMail($purchaseInvoiceHeader));
+        }
 
     }
 

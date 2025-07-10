@@ -46,7 +46,7 @@ return [
         'token_cache_key' => env('EINVOICE_TOKEN_CACHE_KEY', null),
         'token_expiry_buffer_seconds' => env('EINVOICE_TOKEN_EXPIRY_BUFFER_SECONDS', 300),
         'timezone' => env('EINVOICE_TIMEZONE', null),
-        'PRIVATE_KEY_PASSPHRASE' => env('EINVOICE_PRIVATE_KEY_PASSPHRASE', null),
+        'private_key_passphrase' => env('EINVOICE_PRIVATE_KEY_PASSPHRASE', null),
     ],
     'api' => [
         'token' => env('API_TOKEN', null)
