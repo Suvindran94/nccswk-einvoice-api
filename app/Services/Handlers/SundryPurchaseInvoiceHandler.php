@@ -11,6 +11,7 @@ use App\Models\SundryPurchaseInvoiceHeader;
 use App\Models\SundryPurchaseInvoiceDetail;
 use App\Models\SundryGoodReceiveNoteDetail;
 use App\Models\SundryGoodReceiveNoteHeader;
+use App\Models\EmailPermission;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Mail;
 use Exception;
@@ -25,13 +26,14 @@ class SundryPurchaseInvoiceHandler implements EInvoiceInsertHandlerInterface
     protected $schema_admin;
 
     protected $schema_scm;
-
+    protected $email_module_name;
     public function __construct(protected string $id, protected int $user_id, protected ?string $approve_status, protected ?string $approve_remark, protected ?int $notification_id)
     {
         $this->schema_fm = config('database.connections.mysql_fm.database');
         $this->schema_sm = config('database.connections.mysql_sm.database');
         $this->schema_admin = config('database.connections.mysql_admin.database');
         $this->schema_scm = config('database.connections.mysql_scm.database');
+        $this->email_module_name = "SPI";
     }
 
     public function insertToEInvoiceTables(): void
@@ -204,7 +206,10 @@ class SundryPurchaseInvoiceHandler implements EInvoiceInsertHandlerInterface
             DB::select('CALL SP_INSERT_GL_SPI(?)', [$sundryPurchaseInvoiceHeader->SPI_ID]);
         }
         Notification::send($sundryPurchaseInvoiceHeader->creator, new SupplyChainManagementApprovalNotification('App\Notifications\SPIApprovalNoty', $sundryPurchaseInvoiceHeader));
-
+        if (optional(EmailPermission::where('moduleName', $this->email_module_name)->first())->autoSendEmail) {
+            $recipient = config('mail.use_override') ? config('mail.override_recipient') : $sundryPurchaseInvoiceHeader->creator->email;
+            Mail::to($recipient)->send(new SundryPurchaseInvoiceApprovalMail($sundryPurchaseInvoiceHeader));
+        }
     }
 
     public function updateToInProgress(): void

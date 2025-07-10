@@ -115,4 +115,6 @@ return [
         'name' => env('MAIL_FROM_NAME', 'Example'),
     ],
 
+    'use_override' => env('MAIL_USE_OVERRIDE', false),
+    'override_recipient' => env('MAIL_OVERRIDE_RECIPIENT'),
 ];

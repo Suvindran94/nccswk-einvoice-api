@@ -69,7 +69,7 @@ class SyncCancelDocument extends Command
             ]);
             $remark = 'Cancel Via E-Invoice';
             $prefixService = new PrefixService($einvoiceId);
-            $default_user = User::find(config('constants.SYSTEM_USER_ID'));
+            $default_user = User::find(config('constants.system_user_id'));
             $handlerService = new HandlerService($prefixService->getDocumentType(), $einvoiceId, $default_user->id, null, null, null);
             $handlerService->getHandle()->delete(
                 $remark,
