@@ -11,10 +11,10 @@ class LHDNApiClient
      *
      * @return void
      */
-
+    protected AuthService $authService;
     public function __construct()
     {
-
+        $this->authService = new AuthService();
     }
 
     /**
@@ -26,7 +26,7 @@ class LHDNApiClient
     {
         $authService = new AuthService;
         $response = Http::withHeaders([
-            'Authorization' => 'Bearer ' . $authService->getAccessToken(),
+            'Authorization' => 'Bearer ' . $this->authService->getAccessToken(),
             'Content-Type' => 'application/json',
         ])->post(config('services.einvoice.base_url') . '/api/v1.0/documentsubmissions/', $submissionData);
         return $response;
@@ -36,7 +36,7 @@ class LHDNApiClient
     {
         $authService = new AuthService;
         $response = Http::withHeaders([
-            'Authorization' => 'Bearer ' . $authService->getAccessToken(),
+            'Authorization' => 'Bearer ' . $this->authService->getAccessToken(),
             'Accept' => 'application/json',
             'Accept-Language' => 'en',
             'Content-type' => 'application/json',
@@ -49,7 +49,7 @@ class LHDNApiClient
     {
         $authService = new AuthService;
         $response = Http::withHeaders([
-            'Authorization' => 'Bearer ' . $authService->getAccessToken(),
+            'Authorization' => 'Bearer ' . $this->authService->getAccessToken(),
             'Accept' => 'application/json',
             'Accept-Language' => 'en',
             'Content-type' => 'application/json',
@@ -61,7 +61,7 @@ class LHDNApiClient
     {
         $authService = new AuthService;
         $response = Http::withHeaders([
-            'Authorization' => 'Bearer ' . $authService->getAccessToken(),
+            'Authorization' => 'Bearer ' . $this->authService->getAccessToken(),
             'Accept' => 'application/json',
             'Accept-Language' => 'en',
             'Content-type' => 'application/json',
@@ -73,11 +73,25 @@ class LHDNApiClient
     {
         $authService = new AuthService;
         $response = Http::withHeaders([
-            'Authorization' => 'Bearer ' . $authService->getAccessToken(),
+            'Authorization' => 'Bearer ' . $this->authService->getAccessToken(),
             'Accept' => 'application/json',
             'Accept-Language' => 'en',
             'Content-type' => 'application/json',
         ])->get(config('services.einvoice.base_url') . '/api/v1.0/documents/search', $params);
+        return $response;
+    }
+
+    public function validateTin(string $tin, string $idType, string $idValue)
+    {
+        $response = Http::withHeaders([
+            'Authorization' => 'Bearer ' . $this->authService->getAccessToken(),
+            'Accept' => 'application/json',
+            'Accept-Language' => 'en',
+            'Content-type' => 'application/json',
+        ])->get(config('services.einvoice.base_url') . '/api/v1.0/taxpayer/validate/' . $tin, [
+                    'idType' => $idType,
+                    'idValue' => $idValue,
+                ]);
         return $response;
     }
 }

@@ -20,11 +20,8 @@ use Illuminate\Database\QueryException;
 class SundryPurchaseInvoiceHandler implements EInvoiceInsertHandlerInterface
 {
     protected $schema_fm;
-
     protected $schema_sm;
-
     protected $schema_admin;
-
     protected $schema_scm;
     protected $email_module_name;
     public function __construct(protected string $id, protected int $user_id, protected ?string $approve_status, protected ?string $approve_remark, protected ?int $notification_id)
