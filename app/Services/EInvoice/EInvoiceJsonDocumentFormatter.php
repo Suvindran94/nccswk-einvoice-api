@@ -1130,38 +1130,49 @@ class EInvoiceJsonDocumentFormatter
 
     private function populateBillingRefence(EinvoiceHeader $eInvoiceHeader, DocumentType $documentType)
     {
-        $billingReference = [
-            [
-                'AdditionalDocumentReference' => [
-                    [
+        $billingReference = [];
+        if ($documentType == DocumentType::CREDIT_NOTE || $documentType == DocumentType::DEBIT_NOTE || $documentType == DocumentType::SUPPLIER_CREDIT_NOTE || $documentType == DocumentType::SUPPLIER_DEBIT_NOTE) {
+            if (!empty($eInvoiceHeader->EINV_UIN_REF_JSON)) {
+                $billingReferencesInformations = json_decode($eInvoiceHeader->EINV_UIN_REF_JSON, true);
+                foreach ($billingReferencesInformations as $index => $info) {
+                    $billingReference[]['InvoiceDocumentReference'][0] = [
                         'ID' => [
                             [
-                                '_' => $eInvoiceHeader->EINV_BILL_REF ?? '',
+                                '_' => $info['id'] ?? 'NA'
                             ],
                         ],
-                    ],
-                ],
-
-            ],
-
-        ];
-        if ($documentType == DocumentType::CREDIT_NOTE || $documentType == DocumentType::DEBIT_NOTE || $documentType == DocumentType::SUPPLIER_CREDIT_NOTE || $documentType == DocumentType::SUPPLIER_DEBIT_NOTE) {
-            $billingReference[0]['InvoiceDocumentReference'] = [
-                [
+                        'UUID' => [
+                            [
+                                '_' => $info['uuid'] ?? 'NA',
+                            ],
+                        ],
+                    ];
+                }
+            } else {
+                $billingReference[]['InvoiceDocumentReference'][0] = [
                     'ID' => [
                         [
-                            '_' => $eInvoiceHeader->EINV_DOC_REF_ID ?? '',
+                            '_' => 'NA'
                         ],
                     ],
                     'UUID' => [
                         [
-                            '_' => $eInvoiceHeader->EINV_UIN_REF ?? '',
+                            '_' => 'NA',
                         ],
                     ],
-                ],
-            ];
-        }
+                ];
+            }
 
+
+
+        }
+        $billingReference[]['AdditionalDocumentReference'][0] = [
+            'ID' => [
+                [
+                    '_' => $eInvoiceHeader->EINV_BILL_REF ?? '',
+                ],
+            ],
+        ];
         return $billingReference;
     }
 
