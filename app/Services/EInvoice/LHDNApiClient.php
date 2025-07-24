@@ -57,6 +57,16 @@ class LHDNApiClient
         return $response;
     }
 
+    public function getDocumentDetails($uuid)
+    {
+        $response = Http::withHeaders([
+            'Authorization' => 'Bearer ' . $this->authService->getAccessToken(),
+            'Accept' => 'application/json',
+            'Accept-Language' => 'en',
+            'Content-type' => 'application/json',
+        ])->get(config('services.einvoice.base_url') . '/api/v1.0/documents/' . $uuid . '/details');
+        return $response;
+    }
     public function getDocument(string $uuid)
     {
         $authService = new AuthService;
