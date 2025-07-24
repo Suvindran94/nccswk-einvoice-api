@@ -49,7 +49,7 @@ class AuthService
     public function getAccessToken(): ?string
     {
         $cachedToken = Cache::get($this->token_cache_key);
-        if (!$cachedToken) {
+        if (!$cachedToken || !is_array($cachedToken) || !array_key_exists('token', $cachedToken)) {
             $token = $this->refreshAccessToken();
             return $token;
         }
