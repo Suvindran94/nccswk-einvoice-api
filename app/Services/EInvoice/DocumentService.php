@@ -49,6 +49,17 @@ class DocumentService
         }
         return $data;
     }
+
+    public static function getDocumentDetails($uuid)
+    {
+        $lhdnApiClient = new LHDNApiClient();
+        $response = $lhdnApiClient->getDocumentDetails($uuid);
+        $data = $response->json();
+        if (!$response->successful()) {
+            throw new \Exception(json_encode($data), code: 500);
+        }
+        return $data;
+    }
     public static function getRecentDocument($params)
     {
         $lhdiApiClient = new LHDNApiClient();
