@@ -61,10 +61,13 @@ class AuthService
     {
         $cachedToken = Cache::get($this->token_cache_key);
 
-        $expired_at = $cachedToken['expires_at'] ?? null;
+        $expired_at = null;
+        if (isset($cachedToken['expires_at'])) {
+            $expired_at = $cachedToken['expires_at'];
+        }
         try {
             if (
-                empty($expired_at) || !empty($expired_at) && now()->greaterThan($expired_at)
+                empty($expired_at) || (!empty($expired_at) && now()->greaterThan($expired_at))
             ) {
 
                 $response = Http::asForm()->post($this->base_url . '/connect/token', [
