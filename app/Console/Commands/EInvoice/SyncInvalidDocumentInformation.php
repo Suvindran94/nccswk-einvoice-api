@@ -38,7 +38,7 @@ class SyncInvalidDocumentInformation extends Command
             ->where('EINV_STATUS', 'I')
             ->orderBy('ID', 'DESC')
             ->get();
-
+        \Log::info($einvoiceHeader);
         foreach ($einvoiceHeader as $index => $hdr) {
             $detail = DocumentService::getDocumentDetails($hdr['EINV_VALIDATE_UUID']);
 
