@@ -1005,7 +1005,7 @@ class EInvoiceJsonDocumentFormatter
                         ],
                         'Amount' => [
                             [
-                                '_' => floatval(value: $dt->EINV_FEE_AMT),
+                                '_' => floatval($dt->EINV_FEE_AMT),
                                 'currencyID' => $eInvoiceHeader->EINV_CURR,
                             ],
                         ],
