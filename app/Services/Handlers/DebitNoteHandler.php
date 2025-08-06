@@ -82,10 +82,10 @@ class DebitNoteHandler implements EInvoiceInsertHandlerInterface
             AR_FAX1, 
             CO_EINV_VERSION as EINV_VERSION,
             if(DCN_HDR.DCN_OPT = 'CN','02','03') as EINV_TYPE,
-            (SELECT group_concat(EINV_HDR.EINV_ID SEPARATOR ', ')
+            (SELECT ifnull(group_concat(EINV_HDR.EINV_ID SEPARATOR ', '),'NA')
     			from 
     			(
-    			  SELECT 
+    			  SELECT DISTINCT
     			    TRIM(SUBSTRING_INDEX(SUBSTRING_INDEX(DCN_DT.DCN_SOU_ID_EINV, ',', n.n), ',', -1)) AS SOURCE_ID
     			  FROM
     			    {$this->schema_fm}.DCN_DT DCN_DT
@@ -108,10 +108,10 @@ class DebitNoteHandler implements EInvoiceInsertHandlerInterface
     			where EINV_HDR.EINV_OVERALL_STATUS = 'Valid' 
     			and EINV_HDR.EINV_VALIDATE_STATUS = 'Valid'
     		) as EINV_DOC_REF_ID, 
-    		(SELECT group_concat(EINV_HDR.EINV_VALIDATE_UUID SEPARATOR ', ')
+    		(SELECT ifnull(group_concat(EINV_HDR.EINV_VALIDATE_UUID SEPARATOR ', '),'NA')
     			from 
     			(
-    			  SELECT 
+    			  SELECT DISTINCT
     			    TRIM(SUBSTRING_INDEX(SUBSTRING_INDEX(DCN_DT.DCN_SOU_ID_EINV, ',', n.n), ',', -1)) AS SOURCE_ID
     			  FROM
     			    {$this->schema_fm}.DCN_DT DCN_DT
@@ -143,7 +143,7 @@ class DebitNoteHandler implements EInvoiceInsertHandlerInterface
                         ) AS result_json
                         FROM 
                         (
-                        SELECT 
+                        SELECT DISTINCT
                             TRIM(SUBSTRING_INDEX(SUBSTRING_INDEX(DCN_DT.DCN_SOU_ID_EINV, ',', n.n), ',', -1)) AS SOURCE_ID
                         FROM
                             {$this->schema_fm}.DCN_DT DCN_DT
@@ -230,7 +230,7 @@ class DebitNoteHandler implements EInvoiceInsertHandlerInterface
                     (select distinct MTN_P_CAT.P_CAT_TARIFF from {$this->schema_sm}.MTN_P_CAT, {$this->schema_sm}.STK_MST 
                         where MTN_P_CAT.P_STK_CAT1 = STK_MST.STK_CAT1 and MTN_P_CAT.P_CAT_STATUS = 'A' 
                         and MTN_P_CAT.deleted_at is null and STK_MST.STK_CODE = DCN_DT.DCN_STK_CODE ) as EINV_PROD_TARIFF_CODE,
-                    null as EINV_COUNTRY_OF_ORI, 
+                     null as EINV_COUNTRY_OF_ORI, 
                     DCN_DT.DCN_CREATE_BY as EINV_CREATE_BY, DCN_HDR.DCN_CREATE_DATE as EINV_CREATE_DATE, DCN_DT.DCN_UPD_BY as EINV_UPD_BY, DCN_HDR.DCN_UPD_DATE as EINV_UPD_DATE
                 from {$this->schema_fm}.DCN_DT, {$this->schema_fm}.DCN_HDR
                     where DCN_HDR.DCN_ID = DCN_DT.DCN_ID
@@ -253,7 +253,9 @@ class DebitNoteHandler implements EInvoiceInsertHandlerInterface
             DB::rollBack();
             throw new Exception($e->getMessage(), $e->getCode(), $e);
         }
+
     }
+
     public function update(bool $is_cron_job): void
     {
         $dcnHeader = DcnHeader::where('DCN_ID', $this->id)->first();

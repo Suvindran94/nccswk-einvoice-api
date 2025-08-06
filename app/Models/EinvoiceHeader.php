@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class EinvoiceHeader extends Model
 {
@@ -13,4 +14,9 @@ class EinvoiceHeader extends Model
 
     protected $primaryKey = "ID";
     protected $guarded = [];
+
+    public function InvalidEinvoiceHeader(): HasOne
+    {
+        return $this->hasOne(InvalidEinvoiceHeader::class, 'EINV_ID', 'EINV_ID');
+    }
 }

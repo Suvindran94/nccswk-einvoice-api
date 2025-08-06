@@ -82,10 +82,10 @@ class CreditNoteHandler implements EInvoiceInsertHandlerInterface
             AR_FAX1, 
             CO_EINV_VERSION as EINV_VERSION,
             if(DCN_HDR.DCN_OPT = 'CN','02','03') as EINV_TYPE,
-            (SELECT group_concat(EINV_HDR.EINV_ID SEPARATOR ', ')
+            (SELECT ifnull(group_concat(EINV_HDR.EINV_ID SEPARATOR ', '),'NA')
     			from 
     			(
-    			  SELECT 
+    			  SELECT DISTINCT
     			    TRIM(SUBSTRING_INDEX(SUBSTRING_INDEX(DCN_DT.DCN_SOU_ID_EINV, ',', n.n), ',', -1)) AS SOURCE_ID
     			  FROM
     			    {$this->schema_fm}.DCN_DT DCN_DT
@@ -108,10 +108,10 @@ class CreditNoteHandler implements EInvoiceInsertHandlerInterface
     			where EINV_HDR.EINV_OVERALL_STATUS = 'Valid' 
     			and EINV_HDR.EINV_VALIDATE_STATUS = 'Valid'
     		) as EINV_DOC_REF_ID, 
-    		(SELECT group_concat(EINV_HDR.EINV_VALIDATE_UUID SEPARATOR ', ')
+    		(SELECT ifnull(group_concat(EINV_HDR.EINV_VALIDATE_UUID SEPARATOR ', '),'NA')
     			from 
     			(
-    			  SELECT 
+    			  SELECT DISTINCT
     			    TRIM(SUBSTRING_INDEX(SUBSTRING_INDEX(DCN_DT.DCN_SOU_ID_EINV, ',', n.n), ',', -1)) AS SOURCE_ID
     			  FROM
     			    {$this->schema_fm}.DCN_DT DCN_DT
@@ -143,7 +143,7 @@ class CreditNoteHandler implements EInvoiceInsertHandlerInterface
                         ) AS result_json
                         FROM 
                         (
-                        SELECT 
+                        SELECT DISTINCT
                             TRIM(SUBSTRING_INDEX(SUBSTRING_INDEX(DCN_DT.DCN_SOU_ID_EINV, ',', n.n), ',', -1)) AS SOURCE_ID
                         FROM
                             {$this->schema_fm}.DCN_DT DCN_DT
@@ -255,6 +255,7 @@ class CreditNoteHandler implements EInvoiceInsertHandlerInterface
         }
 
     }
+
     public function update(bool $is_cron_job): void
     {
         $dcnHeader = DcnHeader::where('DCN_ID', $this->id)->first();
