@@ -8,6 +8,7 @@ use App\Enums\SubmissionOverallStatus;
 use App\Exceptions\DocumentRejectionException;
 use App\Exceptions\DocumentSubmitFailedException;
 use App\Enums\DocumentResponseStatus;
+use Log;
 class DocumentService
 {
     protected string $id;
@@ -81,7 +82,13 @@ class DocumentService
         $response = $lhdiApiClient->getDocumentSubmission($uid);
         $data = $response->json();
         if (!$response->successful()) {
-            throw new \Exception(json_encode($data), 409);
+            Log::error("Document submission retrieval failed for UID: {$uid}. HTTP Status: {$response->status()}");
+            Log::error(json_encode($data));
+            return [
+                'overall_status' => SubmissionOverallStatus::IN_PROGRESS,
+                'document_summary_status' => DocumentSummaryStatus::NONE,
+                'summary' => null,
+            ];
         }
         $overall_status = SubmissionOverallStatus::fromStatus($data['overallStatus']);
         $document_summary_status = isset($data['documentSummary'][0]['status']) ? DocumentSummaryStatus::fromStatus($data['documentSummary'][0]['status']) : DocumentSummaryStatus::NONE;
