@@ -50,13 +50,13 @@ class SalesInvoiceHandler implements EInvoiceInsertHandlerInterface
                     EINV_SHIP_RCPT_NAME, EINV_SHIP_RCPT_ADDR, EINV_SHIP_RCPT_ADDR0, EINV_SHIP_RCPT_ADDR1, 
                     EINV_SHIP_RCPT_ADDR2, EINV_SHIP_RCPT_POSTCODE, EINV_SHIP_RCPT_CITY, EINV_SHIP_RCPT_STATE_ID, 
                     EINV_SHIP_RCPT_COUNTRY_ID, EINV_SHIP_RCPT_TIN, EINV_SHIP_RCPT_ROC, EINV_INCOTERMS, EINV_FNL_DEST, 
-                    EINV_D_REMARK, EINV_FTA, EINV_AUTH_CERT, EINV_REF_CUSTOM_2, EINV_TRANSPORT_MODE,EINV_DETAIL_OTHERS_AMT, EINV_DETAIL_OTHERS_REASON, 
+                    EINV_D_REMARK, EINV_FTA, EINV_AUTH_CERT, EINV_REF_CUSTOM_2,EINV_TRANSPORT_MODE, EINV_DETAIL_OTHERS_AMT, EINV_DETAIL_OTHERS_REASON, 
                     EINV_TOTAL_ADD_DISC_AMT, EINV_TOTAL_ADD_DISC_REASON, EINV_TOTAL_ADD_FEE_AMT, EINV_TOTAL_ADD_FEE_REASON, 
                     EINV_ROUNDING_AMT, EINV_TAX_CHAR, EINV_HAND_CHAR, EINV_TRANS_CHAR, EINV_INSR_CHAR, EINV_OTH_CHAR, 
                     EINV_TOTAL_AMT, EINV_CREATE_BY_NAME, EINV_CREATE_BY, EINV_CREATE_DATE, EINV_UPD_BY, EINV_UPD_DATE, EINV_STATUS )
                 select  SI_HDR.SI_ID, CO_NAME1, AR_NAME1, CO_TIN, CO_REG_TYPE, CO_ROG, CO_ROG_NEW, 
                     ifnull(CO_SST,'NA') as CO_SST, ifnull(CO_TT,'NA') as CO_TTX,  CO_EMAIL as EINV_SUP_EMAIL, CO_MSIC, CO_BUSINESS_DESC, CO_WEBSITE,
-                    AR_ID, AR_NAMES, EINV_TIN, trim((select REG_TYPE from {$this->schema_sm}.MTN_REG_TYPE where ID = {$this->schema_sm}.AR_MST_CUSTOMER.EINV_REG_TYPE)), AR_ROC_NEW, ifnull(AR_SST_REG_NO,'NA') as AR_SST_REG_NO, 
+                    AR_ID, AR_NAMES, EINV_TIN, trim((select REG_TYPE from {$this->schema_sm}.MTN_REG_TYPE where ID = AR_MST_CUSTOMER.EINV_REG_TYPE)), AR_ROC_NEW, ifnull(AR_SST_REG_NO,'NA') as AR_SST_REG_NO, 
                     ifnull(AR_TTX_REG_NO,'NA') as AR_TTX_REG_NO, EINV_AR_EMAIL,
                     concat(trim(ifnull(CO_ADDR1,'')), ' ', trim(ifnull(CO_ADDR2, '')),  trim(concat(' ', trim(ifnull(CO_ADDR3, '')), ' ' , trim(ifnull(CO_ADDR4, '')), ' ')), 
                         ' ', trim(ifnull(MTN_CO.POSTCODE,'')), ' ', trim((select CITY_NAME from {$this->schema_sm}.MTN_CITY where ID = MTN_CO.CITY_ID) ),
@@ -96,8 +96,8 @@ class SalesInvoiceHandler implements EInvoiceInsertHandlerInterface
                     null as EINV_PAYMENT_MODE,	
                     null as EINV_SUP_BANK_ACCT, 
                     (select TERM_DESC from {$this->schema_sm}.MTN_TERM where MTN_TERM.TERM_ID = SI_HDR.SI_TERM) as EINV_TERM,
-                    ifnull(tblDeposit.depositAmt,0) as EINV_PREPAYMENT_AMT,if(ifnull(tblDeposit.depositAmt,0) = 0, null,  tblDeposit.DepositDate) as EINV_PREPAYMENT_DATE, 
-                    IF(ifnull(tblDeposit.depositAmt,0) = 0, '-', ifnull(tblDeposit.DepositRef,'-')) as EINV_PREPAYMENT_REF,
+                   ifnull(tblDeposit.depositAmt,0) as EINV_PREPAYMENT_AMT, if(ifnull(tblDeposit.depositAmt,0) = 0, null,  tblDeposit.DepositDate) as EINV_PREPAYMENT_DATE, 
+        IF(ifnull(tblDeposit.depositAmt,0) = 0, '-', ifnull(tblDeposit.DepositRef,'-')) as EINV_PREPAYMENT_REF,
                     null as EINV_BILL_REF, null as EINV_REF_CUSTOM, 
                     SI_D_NAME as EINV_SHIP_RCPT_NAME, 
                     concat(trim(ifnull(SI_D_LINE_1,'')), ' ', trim(ifnull(SI_D_LINE_2, '')),  trim(concat(' ', trim(ifnull(SI_D_LINE_3, '')), ' ' , trim(ifnull(SI_D_LINE_4, '')), ' ')), 
@@ -117,8 +117,8 @@ class SalesInvoiceHandler implements EInvoiceInsertHandlerInterface
                     SI_FNL_DEST as EINV_FNL_DEST,
                     SI_D_REMARK as EINV_D_REMARK,
                     null as EINV_FTA, null as EINV_AUTH_CERT, 
-                    (select ifnull(DOC_REF, '-') from {$this->schema_sm}.SI_DOC where SI_ID = SI_HDR.SI_ID and  SI_DOC_TYPE = '1' and deleted_at is null ) as EINV_REF_CUSTOM_2, 
-                    (select MTN_DESC from {$this->schema_sm}.MTN_MST where CLASS_ID = 'AR_TRANS_MODE' and MTN_ID = SI_HDR.SI_TRNS_METH ) as EINV_TRANSPORT_MODE,
+                    (select ifnull(DOC_REF, '-') from {$this->schema_sm}.SI_DOC where SI_ID = SI_HDR.SI_ID and  SI_DOC_TYPE = '1' and deleted_at is null ) as EINV_REF_CUSTOM_2,
+                    (select MTN_DESC from {$this->schema_sm}.MTN_MST where CLASS_ID = 'AR_TRANS_MODE' and MTN_ID = SI_HDR.SI_TRNS_METH ) as EINV_TRANSPORT_MODE, 
                     0 as EINV_DETAIL_OTHERS_AMT, null as EINV_DETAIL_OTHERS_REASON, 
                     0 as EINV_TOTAL_ADD_DISC_AMT, null as EINV_TOTAL_ADD_DISC_REASON, 
                     (SI_HAND_CHAR + SI_TRANS_CHAR + SI_INSR_CHAR + SI_OTH_CHAR) as EINV_TOTAL_ADD_FEE_AMT, 
@@ -133,7 +133,9 @@ class SalesInvoiceHandler implements EInvoiceInsertHandlerInterface
                 left join ( select SI_DEPOSIT.SI_ID, group_concat(SI_DEPOSIT.QUO_ID) as DepositRef, max(RECEIPT_HDR.RCPT_COLLECTION_DATE) as DepositDate , sum(SI_DEPOSIT.DEP_AMT_OFFSET) as depositAmt 
                             from {$this->schema_sm}.SI_DEPOSIT, {$this->schema_fm}.RECEIPT_HDR
                             where SI_DEPOSIT.RCPT_ID = RECEIPT_HDR.RCPT_ID 
-                            and SI_DEPOSIT.deleted_at is null 
+							and RECEIPT_HDR.RCPT_STATUS = 'A' 
+							and RECEIPT_HDR.deleted_at is null
+							and SI_DEPOSIT.deleted_at is null 
                             group by SI_DEPOSIT.SI_ID
                         ) tblDeposit on tblDeposit.SI_ID = SI_HDR.SI_ID
                 where SI_HDR.SI_AR = AR_MST_CUSTOMER.AR_ID
@@ -172,8 +174,8 @@ class SalesInvoiceHandler implements EInvoiceInsertHandlerInterface
                     0 as EINV_DISC_RATE, 0 as EINV_DISC_AMT, null as EINV_DISC_REASON, 0 as EINV_FEE_RATE, 0 as EINV_FEE_AMT, null as EINV_FEE_REASON, 
                     (select distinct MTN_P_CAT.P_CAT_TARIFF from {$this->schema_sm}.MTN_P_CAT, {$this->schema_sm}.STK_MST 
                     where MTN_P_CAT.P_STK_CAT1 = STK_MST.STK_CAT1 and MTN_P_CAT.P_CAT_STATUS = 'A' 
-                    and MTN_P_CAT.deleted_at is null and STK_MST.STK_CODE = SI_DT.SI_STK_CODE ) as EINV_PROD_TARIFF_CODE,
-                     null as EINV_COUNTRY_OF_ORI, 
+                    and MTN_P_CAT.deleted_at is null and STK_MST.STK_CODE = SI_DT.SI_STK_CODE )  as EINV_PROD_TARIFF_CODE,
+                    null as EINV_COUNTRY_OF_ORI, 
                     SI_DT.SI_CREATE_BY as EINV_CREATE_BY, SI_HDR.SI_CREATE_DATE as EINV_CREATE_DATE, SI_DT.SI_UPD_BY as EINV_UPD_BY, SI_HDR.SI_UPD_DATE as EINV_UPD_DATE
                 from {$this->schema_sm}.SI_DT, {$this->schema_sm}.SI_HDR
                 where SI_HDR.SI_ID = SI_DT.SI_ID
