@@ -8,7 +8,7 @@ use App\Models\Company;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
 
-class EInvoiceJsonDocumentFormatter
+class EInvoiceJsonDocumentFormatterV1
 {
     /**
      * Create a new service instance.
@@ -49,7 +49,7 @@ class EInvoiceJsonDocumentFormatter
         $signedDocument['Invoice'][0]['UBLExtensions'][0]['UBLExtension'][0]['ExtensionContent'][0]['UBLDocumentSignatures'][0]['SignatureInformation'][0]['Signature'][0]['KeyInfo'][0]['X509Data'][0]['X509Certificate'][0]['_'] = $certificateRawData;
         $signedDocument['Invoice'][0]['UBLExtensions'][0]['UBLExtension'][0]['ExtensionContent'][0]['UBLDocumentSignatures'][0]['SignatureInformation'][0]['Signature'][0]['SignedInfo'][0]['Reference'][0]['DigestValue'][0]['_'] = $hashedSignedProperties;
         $signedDocument['Invoice'][0]['UBLExtensions'][0]['UBLExtension'][0]['ExtensionContent'][0]['UBLDocumentSignatures'][0]['SignatureInformation'][0]['Signature'][0]['SignedInfo'][0]['Reference'][1]['DigestValue'][0]['_'] = $documentDigest;
-        if (in_array(request()->getHost(), ['localhost', '127.0.0.1', '192.168.122.72'])) {
+        if (in_array(request()->getHost(), ['localhost', '127.0.0.1', '192.168.126.33'])) {
             $organizationIdentifier = $certificateDetails['subject']['organizationIdentifier'];
         } else {
             $organizationIdentifier = $certificateDetails['subject']['UNDEF'];
@@ -928,6 +928,7 @@ class EInvoiceJsonDocumentFormatter
         }
         return $data;
     }
+
     private function populateDiscountLines($discounts, $subTotal, &$totalDiscount, $currencyCode)
     {
         $allowanceCharge = [];
@@ -966,7 +967,7 @@ class EInvoiceJsonDocumentFormatter
     }
     private function populateInvoiceLines(Collection $eInvoiceDetail, EinvoiceHeader $eInvoiceHeader)
     {
-        foreach ($eInvoiceDetail as $dt) {
+        foreach ($eInvoiceDetail as $index => $dt) {
             $quantity = 1;
             if (intval($dt->EINV_QTY) != 0) {
                 $quantity = intval($dt->EINV_QTY);
@@ -1026,63 +1027,16 @@ class EInvoiceJsonDocumentFormatter
                 ],
                 'LineExtensionAmount' => [
                     [
-                        '_' => floatval($dt->EINV_TOTAL_EXCL_TAX),
+                        '_' => round($totalExcludeTaxAmount, $this->round),
                         'currencyID' => $eInvoiceHeader->EINV_CURR,
                     ],
                 ],
-                'AllowanceCharge' => [
-                    [
-                        'ChargeIndicator' => [
-                            [
-                                '_' => false,
-                            ],
-                        ],
-                        'AllowanceChargeReason' => [
-                            [
-                                '_' => '',
-                            ],
-                        ],
-                        'MultiplierFactorNumeric' => [
-                            [
-                                '_' => round($dt->EINV_DISC_RATE, 2),
-                            ],
-                        ],
-                        'Amount' => [
-                            [
-                                '_' => floatval($dt->EINV_DISC_AMT),
-                                'currencyID' => $eInvoiceHeader->EINV_CURR,
-                            ],
-                        ],
-                    ],
-                    [
-                        'ChargeIndicator' => [
-                            [
-                                '_' => true,
-                            ],
-                        ],
-                        'AllowanceChargeReason' => [
-                            [
-                                '_' => '',
-                            ],
-                        ],
-                        'MultiplierFactorNumeric' => [
-                            [
-                                '_' => round($dt->EINV_FEE_RATE, 2),
-                            ],
-                        ],
-                        'Amount' => [
-                            [
-                                '_' => floatval($dt->EINV_FEE_AMT),
-                                'currencyID' => $eInvoiceHeader->EINV_CURR,
-                            ],
-                        ],
-                    ],
-                ],
+                'AllowanceCharge' => $allowanceCharge,
                 'TaxTotal' => [
                     [
                         'TaxAmount' => [
                             [
-                                '_' => floatval($dt->EINV_TAX_AMT),
+                                '_' => round(floatval($dt->EINV_TAX_AMT), $this->round),
                                 'currencyID' => $eInvoiceHeader->EINV_CURR,
                             ],
                         ],
@@ -1090,7 +1044,7 @@ class EInvoiceJsonDocumentFormatter
                             [
                                 'TaxableAmount' => [
                                     [
-                                        '_' => floatval($dt->EINV_TAX_AMT_EXEMPTED),
+                                        '_' => round(floatval($dt->EINV_TAX_AMT_EXEMPTED), $this->round),
                                         'currencyID' => $eInvoiceHeader->EINV_CURR,
                                     ],
                                 ],
@@ -1174,7 +1128,7 @@ class EInvoiceJsonDocumentFormatter
                     [
                         'PriceAmount' => [
                             [
-                                '_' => floatval($dt->EINV_NETT_UNIT_PRICE),
+                                '_' => floatval($dt->EINV_UNIT_PRICE),
                                 'currencyID' => $eInvoiceHeader->EINV_CURR,
                             ],
                         ],
@@ -1184,7 +1138,7 @@ class EInvoiceJsonDocumentFormatter
                     [
                         'Amount' => [
                             [
-                                '_' => floatval($dt->EINV_SUBTOTAL),
+                                '_' => round(floatval($subTotal), $this->round),
                                 'currencyID' => $eInvoiceHeader->EINV_CURR,
                             ],
                         ],
