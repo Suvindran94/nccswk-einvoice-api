@@ -163,7 +163,7 @@ class SalesInvoiceHandler implements EInvoiceInsertHandlerInterface
                     SI_SEQ_STATUS as EINV_SEQ_STATUS, EINV_CLASSIF_INCOME, SI_DT.SI_CUST_STK_CODE as EINV_PRODUCT_REF1, 
                     SI_DT.SI_STK_CODE as EINV_PRODUCT_REF2, concat(SI_DT.SI_STK_DESC_1, ' ', ifnull(SI_DT.SI_STK_DESC_2,'') ) as EINV_PRODUCT_DESC, 
                     SI_DT.SI_SEQ_REMARK as EINV_PRODUCT_REMARKS, SI_DT.SI_PO_NO as EINV_PO_NO,
-                    SI_DT.SI_UNIT_PRICE as EINV_UNIT_PRICE, SI_DT.SI_NU_PRICE as EINV_NETT_UNIT_PRICE, 
+                    SI_DT.SI_NU_PRICE as EINV_UNIT_PRICE, SI_DT.SI_NU_PRICE as EINV_NETT_UNIT_PRICE, 
                     (select MTN_GST_CODE.EINV_TAX_TYPE_CODE from {$this->schema_sm}.MTN_GST_CODE where MTN_GST_CODE.GST_ID = SI_HDR.SI_TAX_ID) as EINV_TAX_TYPE, 
                     (select MTN_GST_CODE.GST_RATE from {$this->schema_sm}.MTN_GST_CODE where MTN_GST_CODE.GST_ID = SI_HDR.SI_TAX_ID) as EINV_TAX_RATE, 
                     sum(SI_DT.SI_GST_AMT) as EINV_TAX_AMT, null as EINV_TAX_EXEMPTION_DESC, 0 as EINV_TAX_AMT_EXEMPTED, 
@@ -183,8 +183,7 @@ class SalesInvoiceHandler implements EInvoiceInsertHandlerInterface
                 group by SI_HDR.SI_ID, 
                     EINV_CLASSIF_INCOME, SI_DT.SI_SOU_ID, SI_SEQ_STATUS,
                     SI_DT.SI_CUST_STK_CODE, SI_DT.SI_STK_CODE, concat(SI_DT.SI_STK_DESC_1, ' ', ifnull(SI_DT.SI_STK_DESC_2,'') ), 
-                    SI_DT.SI_SEQ_REMARK, SI_DT.SI_PO_NO,
-                    SI_DT.SI_UNIT_PRICE, SI_DT.SI_NU_PRICE, 
+                    SI_DT.SI_SEQ_REMARK, SI_DT.SI_PO_NO, SI_DT.SI_NU_PRICE, 
                     SI_HDR.SI_TAX_ID, SI_DT.SI_UOM, 
                     SI_DT.SI_DISC1, SI_DT.SI_CREATE_BY, SI_HDR.SI_CREATE_DATE, SI_DT.SI_UPD_BY, SI_HDR.SI_UPD_DATE
                 ) TblA       
